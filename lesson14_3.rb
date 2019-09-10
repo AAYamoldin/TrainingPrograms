@@ -19,9 +19,6 @@ end
     return @speed > 0
   end
 end
-
-
-
 plane1 = Airplane.new("Boeing - 777")
 puts "Model #{plane1.model}, Speed #{plane1.speed}, Altitude #{plane1.altitude}"
 puts "Is moving: #{plane1.moving?}"
