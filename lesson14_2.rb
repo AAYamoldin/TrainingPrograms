@@ -6,7 +6,6 @@ class Book
   def add_person options
     puts "Already Exist!" if @hh[options[:name]]
     @hh[options[:name]] = options[:age]
-   # last_person = {:name => }
   end
 
   def show_book
@@ -14,9 +13,11 @@ class Book
       puts "Name is #{key} age is #{value}"
     end
   end
-def all
+
+  def all
   @hh
 end
+
   def last_person
   puts "последняя персона #{@hh.keys[-1]} с возрастом #{@hh.values.last}"
 end
