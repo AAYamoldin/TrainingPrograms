@@ -1,7 +1,6 @@
 output = File.open("./filenew.txt","a")
 output.write "something \n"
 output.close
-
 input = File.open("./test.txt", "r")
 totalearn = 0
 while (line = input.gets)
