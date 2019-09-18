@@ -10,3 +10,5 @@ while (line = input.gets)
 end
 input.close
 puts "total earn = #{totalearn}"
+puts Dir.pwd
+print Dir.entries "/home/alexander/Projects/"
