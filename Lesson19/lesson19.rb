@@ -12,6 +12,9 @@ post '/' do#браузер хочет отправить какие-то дан�
   @password = params[:bbb]
   if @login == 'admin' && @password == 'secret'
     erb :welcome
+  elsif @login == 'admin' && @password == 'admin'
+    @message = 'Haaha, nice try!'
+    erb :index
     else
   erb :poshel_von
   end
