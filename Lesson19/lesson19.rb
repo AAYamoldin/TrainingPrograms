@@ -21,15 +21,36 @@ get '/something' do
   erb :message
 end
 
-post '/' do#браузер хочет отправить какие-то данные
-  @login = params[:aaa]
-  @password = params[:bbb]
-  if @login == 'admin' && @password == 'secret'
-    erb :welcome
-  elsif @login == 'admin' && @password == 'admin'
-    @message = 'Haaha, nice try!'
-    erb :index
-    else
+get '/admin' do
   erb :poshel_von
+end
+post '/admin' do
+  @login = params[:login]
+  @password = params[:password]
+
+  if @login == 'admin' && @password == 'admin'
+    erb :welcome
+     @logfile = File.open("./users.txt", "r")
+     erb :create
+    # @logfile.close
+  else
+    @title = 'Poshel won!'
+    @message = 'wrong login or password'
+    erb :message
   end
+end
+
+post '/' do#браузер хочет отправить какие-то данные
+  @user_name = params[:user_name]
+  @phone = params[:phone]
+  @date_time = params[:date_time]
+
+  @title = 'Thanks!'
+  @message = "Thank you, #{@user_name}! We'll be waiting you at #{@date_time}!"
+
+  f = File.open 'users.txt', 'a'
+  f.write "\n User: #{@user_name}, Phone: #{@phone}, Date and time: #{@date_time}"
+  f.close
+
+  erb :message
 end
