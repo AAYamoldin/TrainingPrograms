@@ -1,3 +1,0 @@
-User: puk, Phone: 321321, Date and time: 13.10.10
-User: lol, Phone: 123123, Date and time: 16.10.1996
- User: lol, Phone: 321321, Date and time: 13.10.10
