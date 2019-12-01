@@ -71,7 +71,7 @@ while 2 + 2 == 4
   game_movies num
   location_of_cells
   if @table.has_value?("-") == false
-    puts "Ничья! Вы что, все охуели??"
+    puts "Ничья! Вы что, все охренели??"
     break
   end
   break if check_wins == true
