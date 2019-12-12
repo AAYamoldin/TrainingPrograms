@@ -1,17 +1,23 @@
-function promisify(f) {
-  return function (...args) { // возвращает функцию-обёртку
+// promisify(f, true), чтобы получить массив результатов
+function promisify(f, manyArgs = false) {
+  return function (...args) {
     return new Promise((resolve, reject) => {
-      function callback(err, result) { // наш специальный колбэк для f
+      function callback(err, ...results) { // наш специальный колбэк для f
         if (err) {
           return reject(err);
         } else {
-          return resolve(result);
+          // делаем resolve для всех results колбэка, если задано manyArgs
+          resolve(manyArgs ? results : results[0]);
         }
       }
 
-      args.push(callback); // добавляем колбэк в конец аргументов f
+      args.push(callback);
 
-      f.call(this, ...args); // вызываем оригинальную функцию
+      f.call(this, ...args);
     });
   };
 };
+
+// использование:
+f = promisify(f, true);
+f(...).then(arrayOfResults => ..., err => ...)
