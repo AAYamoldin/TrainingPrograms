@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport"
+				content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<link rel="stylesheet" href="./libs/bootstrap.min.css">
+	<link rel="stylesheet" href="./style/style.css">
+	<title>freelance - шаурма</title>
+</head>
+<body>
+
+<!--hello world-->
+<main class="container py-5 text-center">
+	<div id="block-choice">
+		<img class="d-block mx-auto mb-4" src="./img/logo.png" alt="" width="72" height="72">
+		<h1>FreeShavuha</h1>
+		<p class="lead text-muted">Добро пожаловать на нашу фриланс биржу</p>
+		<p class="lead text-muted">Если вы заказчик то вы можете заказать проект</p>
+		<p class="lead text-muted">Если вы фрилансер то вы всегда найдете у нас проект по силам</p>
+		<p class="mt-5">
+			<a href="#" id="customer" class="btn btn-primary my-3 px-4 py-2">Заказчик</a>
+			<a href="#" id="freelancer" class="btn btn-secondary my-3 px-4 py-2">Фрилансер</a>
+		</p>
+	</div>
+
+
+	<!--meanie - заказчик-->
+
+	<div id="block-customer">
+		<img class="d-block mx-auto mb-4" src="./img/logo.png" alt="" width="72" height="72">
+		<h1>FreeShavuha</h1>
+		<div class="col">
+			<h4 class="mb-3">Оставьте заявку</h4>
+			<form id="form-customer">
+
+				<div class="mb-3">
+					<label for="title">Заголовок (краткое описание задачи)</label>
+					<input type="text" class="form-control" id="title" name="title" required value="заголовок">
+				</div>
+				<div class="row">
+					<div class="col-md-4 mb-3">
+						<label for="firstName">Ваше имя</label>
+						<input type="text" class="form-control" id="firstName" name="firstName" required value="ваше имя">
+					</div>
+					<div class="col-md-4 mb-3">
+						<label for="email">Email</label>
+						<input type="email" class="form-control" id="email" name="email" placeholder="you@mail.com" required
+									 value="email@email">
+					</div>
+					<div class="col-md-4 mb-3">
+						<label for="phone">Номер телефона <span class="text-muted">(optional)</span></label>
+						<input type="text" class="form-control" id="phone" name="phone" value="911">
+					</div>
+				</div>
+
+
+				<div class="mb-3">
+					<label for="description">Описание</label>
+					<textarea type="text" class="form-control" id="description" name="description"
+										placeholder="Поднобно опишите задачу" rows="4"
+										required>Lorem ipsum dolor sit amet, consectetur.</textarea>
+				</div>
+
+				<div class="row">
+					<div class="col-md-6 mb-3">
+
+						<div class="mb-3">
+							<label for="amount">Количество</label>
+							<input type="number" class="form-control" id="amount" name="amount" required value="10">
+						</div>
+						<div class="d-flex justify-content-center">
+							<label class="currency">
+								<input class="currency__radio" type="radio" name="currency" id="bucks" value="bucks">
+								<span class="img__radio img__radio_bucks"></span>
+							</label>
+							<label class="currency">
+								<input class="currency__radio" type="radio" name="currency" id="shawarma" value="shawarma" checked>
+								<span class="img__radio img__radio_shawarma"></span>
+							</label>
+							<label class="currency">
+								<input class="currency__radio" type="radio" name="currency" id="doshirak" value="doshirak">
+								<span class="img__radio img__radio_doshirak"></span>
+							</label>
+						</div>
+					</div>
+					<div class="col-md-6 mb-3">
+						<div class="mb-3">
+							<label for="deadline">Срок выполнения до:</label>
+
+							<input type="date" id="deadline" class="form-control" name="deadline" max="2020-12-31" required
+										 value="2020-01-01">
+						</div>
+						<button class="btn btn-primary btn-lg btn-block" type="submit">Отправить заявку</button>
+					</div>
+
+				</div>
+
+
+			</form>
+		</div>
+	</div>
+
+	<!--freelancer-->
+
+	<div id="block-freelancer">
+		<img class="d-block mx-auto mb-4" src="./img/logo.png" alt="" width="72" height="72">
+		<h1>FreeShavuha</h1>
+		<div class="table-responsive">
+			<table class="table table-bordered table-hover table-sm">
+				<thead class="thead-dark">
+				<tr>
+					<th>#</th>
+					<th>Основная задача</th>
+					<th>Валюта</th>
+					<th>Дедлайн</th>
+				</tr>
+				</thead>
+				<tbody id="orders">
+				<tr class="order">
+					<td>1</td>
+					<td>Lorem</td>
+					<td class="doshirak"></td>
+					<td>2019-12-31</td>
+				</tr>
+				<tr class="order taken">
+					<td>2</td>
+					<td>Lorem</td>
+					<td class="bucks"></td>
+					<td>2020-01-14</td>
+				</tr>
+				<tr class="order">
+					<td>3</td>
+					<td>Lorem</td>
+					<td class="doshirak"></td>
+					<td>2019-12-24</td>
+				</tr>
+				<tr class="order taken">
+					<td>4</td>
+					<td>Lorem</td>
+					<td class="shawarma"></td>
+					<td>2020-02-03</td>
+				</tr>
+				<tr class="order">
+					<td>5</td>
+					<td>Lorem</td>
+					<td class="doshirak"></td>
+					<td>2020-04-02</td>
+				</tr>
+				<tr class="order">
+					<td>6</td>
+					<td>Lorem</td>
+					<td class="shawarma"></td>
+					<td>2020-02-14</td>
+				</tr>
+
+
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<button class="btn btn-info" id="btn-exit">Выход</button>
+
+</main>
+<!--modal-->
+
+<div id="order_read" class="order-modal modal bd-example-modal-lg">
+	<div class="modal-dialog modal-lg m-auto" role="document">
+
+		<div class="modal-content">
+			<div class="modal-header bg-dark text-white">
+				<h4 class="modal-title ">Заголовок</h4>
+				<button type="button" class="close text-white" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-6">
+						<b>Имя заказчика: </b><span class="firstName">Петров Василий</span>
+					</div>
+					<div class="col-6">
+						<b>Email заказчика: </b><a class="email" href="mailto:1@1">1@1</a>
+					</div>
+					<div class="col-12 bg-info text-white my-4">
+						<h5>Подробное описание задачи</h5>
+						<p class="description">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam consectetur
+							consequuntur facilis magni maiores neque nostrum. Accusantium corporis culpa esse facilis modi neque
+							nesciunt odio quisquam rerum veritatis, voluptatibus, voluptatum!</p>
+					</div>
+
+					<div class="col-12 bg-warning text-dark pt-2 d-flex justify-content-around align-content-center">
+						<h5>Срок сдачи проекта</h5>
+						<p class="deadline">10.03.2020</p>
+					</div>
+
+				</div>
+			</div>
+			<div class="modal-footer justify-content-between">
+				<div class="modal-currency">
+					<span class="text">Оплата:</span>
+					<span class="currency"><span class="currency_img"></span></span>
+					<span class="count">5</span>
+				</div>
+				<div>
+					<button type="button" class="btn btn-info"><a class="phone text-white" href="#">Связаться</a>
+					</button>
+					<button type="button" class="btn btn-success get-order">Взять заказ</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="order_active" class="order-modal modal bd-example-modal-lg">
+	<div class="modal-dialog modal-lg m-auto" role="document">
+
+		<div class="modal-content">
+			<div class="modal-header bg-success text-white">
+				<h4 class="modal-title ">Заголовок</h4>
+				<button type="button" class="close text-white" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-4 text-center">
+						<p>
+							<b>Имя заказчика: </b>
+						</p>
+						<span class="firstName">Петров Василий</span>
+					</div>
+					<div class="col-4 text-center">
+						<p>
+							<b>Email заказчика: </b>
+						</p>
+						<a class="email" href="mailto:1@1">1@1</a>
+					</div>
+					<div class="col-4 text-center modal-currency">
+						<span class="text">Оплата:</span>
+						<span class="currency"><span class="currency_img"></span></span>
+						<span class="count">5</span>
+					</div>
+					<div class="col-12 bg-info text-white my-4 py-2">
+						<h5>Подробное описание задачи</h5>
+						<p class="description">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam consectetur
+							consequuntur facilis magni maiores neque nostrum. Accusantium corporis culpa esse facilis modi neque
+							nesciunt odio quisquam rerum veritatis, voluptatibus, voluptatum!</p>
+					</div>
+
+					<div class="col-12 bg-warning text-dark pt-2 d-flex justify-content-around align-content-center">
+						<h5>Срок сдачи проекта</h5>
+						<p class="deadline">10.03.2020</p>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer justify-content-end">
+				<button type="button" id="capitulation" class="btn btn-danger">Отказаться</button>
+
+				<button type="button" id="ready" class="btn btn-success">Выполнил</button>
+
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!--exit-->
+
+
+</body>
+
+
+</html>
+
