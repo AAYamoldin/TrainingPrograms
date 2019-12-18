@@ -11,5 +11,23 @@
     "devel": true,
     "jquery": true,
     "esversion": 6,
-    "node": true
+    "node": true,
+    
+    "predef": [ "$", "jQuery", "text", "$p", "window", "document", "console", "parent" ],
+    "eqeqeq":               true,
+    "funcscope":            true,
+    "futurehostile":        true,
+ "latedef":              true,
+  "nonbsp":               true,
+  "notypeof":             true,
+  "shadow":               "outer",
+    "singleGroups":         true,
+        "undef":                true,
+        "unused":               true,
+      
+        "debug":                true,
+        "scripturl":            true,
+      
+        "-W079":                true
+      
 }
