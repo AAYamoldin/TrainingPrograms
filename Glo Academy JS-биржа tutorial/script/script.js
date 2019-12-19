@@ -12,7 +12,28 @@ document.addEventListener(`DOMContentLoaded`, () => {
     const modalOrderActive = document.getElementById(`order_active`);// получаем html данные если хотим получить открытый заказ
 
 
-    const orders = []; //массив заказов const чтобы мы не переприсваивали значение
+    const orders = JSON.parse(localStorage.getItem(`freeOrders`)) || []; //массив заказов проверяем на наличие заказов в локалсторадже, если их нет, то пустой массив
+
+    const toStorage = () => {
+        localStorage.setItem(`freeOrders`, JSON.stringify(orders));
+    };
+
+    const todayDay = () => {
+        let today = new Date();
+        today = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`;
+        return today
+    };
+
+    function declOfNum(n, titles) {
+        return titles[n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2];
+      };
+
+    const calcDeadline = (deadline) => {
+        let today = new Date();
+        let date2 = new Date(deadline);
+        let daysLag = Math.ceil(Math.abs(date2.getTime() - today.getTime()) / (1000 * 3600));
+        return ( `${daysLag} ${declOfNum(daysLag, [`час`, `часа`, `часов`])}`)
+    };
 
     const renderOrders = (() => {
         ordersTable.textContent = ``;//обнуление заказов, чтобы постоянно не накапливалист строки таблицы, т.е. каждый раз переписываем ее заново с помощью inner.HTML
@@ -22,11 +43,11 @@ document.addEventListener(`DOMContentLoaded`, () => {
             // работа с таблицей из фрилансера
 
             ordersTable.innerHTML += `
-<tr class="order" data-number-order="${i}">
+<tr class="order ${order.active ? `taken` : `` } " data-number-order="${i}">
 					<td>${i+1}</td> 
 					<td>${order.title}</td>
 					<td class="${order.currency}"></td>
-					<td>${order.deadline}</td>
+					<td>${calcDeadline(order.deadline)}</td>
 </tr>`
 // data-number-order это датаатрибут
 //первый td значение в первом столбце(номер заказа)
@@ -36,36 +57,87 @@ document.addEventListener(`DOMContentLoaded`, () => {
         });
     });
 
+
+    const handlerModal = (event) => {
+        const target = event.target;
+
+        const modal = target.closest(`.order-modal`);
+
+        const order = orders[modal.id];
+
+        const baseAction = () => {
+        modal.style.display = `none`;
+        toStorage();
+        renderOrders();
+        };
+
+        if (target.closest(`.close `) || (target == modal)) {
+            modal.style.display = `none`;
+        };
+
+        if (target.classList.contains(`get-order`)) {
+            order.active = true;
+            baseAction();
+        };
+
+        if (target.id === `capitulation`) {
+            order.active = false;//если отказываемся от заказа то опять делаем его неактивным
+            baseAction();
+        };
+
+        if (target.id === `ready`) {
+            
+            orders.splice(orders.indexOf(order), 1);//какой элемент по индексу удалить, сколько удалить
+            baseAction();
+        };
+
+    };
+
+
     const openModal = (numberOrder) => {
+       
        const order = orders[numberOrder];
-       const modal = order.active ? modalOrderActive : modalOrder;
        
-       const firstNameBlock = document.querySelector(`.firstName`),
-       titleBlock = document.querySelector(`.modal-title`),
-       emailBlock = document.querySelector(`.email`),
-       descriptionBlock = document.querySelector(`.description`),
-       deadlineBlock = document.querySelector(`.deadline`),
-       currencyBlock = document.querySelector(`.currency_img`),
-       countBlock = document.querySelector(`.count`),
-       phoneBlock = document.querySelector(`.phone`);
+       const { title, firstName, email, phone, description,
+         amount, currency, deadline, active = false } = order;//деструктивное присваивание, {какие свойства} = откуда, если из массива то []s
+       // active = false это свойство по умолчанию
+         let modal = order.active ? modalOrderActive : modalOrder;
+
+       
        
 
-       titleBlock.textContent = order.title;
-       firstNameBlock.textContent = order.firstName;
-       emailBlock.textContent = order.email;
-       descriptionBlock.textContent = order.description;
-       deadlineBlock.textContent = order.deadline;
-       currencyBlock.innerHTML = `<span class="img__radio img__radio_${order.currency}"></span>`;
-       countBlock.textContent = order.amount;
-       if (order.phone) phoneBlock.textContent = order.phone;
+       const firstNameBlock = modal.querySelector(`.firstName`),
+       titleBlock = modal.querySelector(`.modal-title`),
+       emailBlock = modal.querySelector(`.email`),
+       descriptionBlock = modal.querySelector(`.description`),
+       deadlineBlock = modal.querySelector(`.deadline`),
+       currencyBlock = modal.querySelector(`.currency_img`),
+       countBlock = modal.querySelector(`.count`),
+       phoneBlock = modal.querySelector(`.phone`);
        
-       modal.style.display = `block`;//выводим на дисплей нашу модалку в зависимости от того, активный заказ или нет
 
-       closeBlock = document.getElementsByClassName(`close text-white`);
-       console.log(' closeBlock: ',  closeBlock);
-       closeBlock[0].addEventListener(`click`, () => modal.style.display = `none`)
+       modal.id = numberOrder;//индекс заказа
+       titleBlock.textContent = title;
+       firstNameBlock.textContent = firstName;
+       emailBlock.textContent = email;
+       emailBlock.href = `mailto: ` + email;//запись емейла в чреф
+       descriptionBlock.textContent = description;
+       deadlineBlock.textContent = calcDeadline(deadline);
+       //currencyBlock.innerHTML = `<span class="img__radio img__radio_${order.currency}"></span>`;//вставка картинки с методом оплаты или алтернативно
+       currencyBlock.className = `currency_img`; //по умолчанию перед добавление нового класса сбрасываем его в currency_img
+       currencyBlock.classList.add(currency);//альтернативный   метод
+       countBlock.textContent = amount;
+       if (order.phone) phoneBlock.href = `tel: ` + phone;//tel: запускает либо скайп либо телефон и тп
+    //    console.log('firstNameBlock: ', firstNameBlock);
 
-    }
+
+       modal.style.display = `flex`;//выводим на дисплей нашу модалку в зависимости от того, активный заказ или нет
+
+       modal.addEventListener(`click`, handlerModal);//клик в любое место в модальном окне
+
+
+
+    };
 
     ordersTable.addEventListener(`click`, event => { //обработчик события вешаем сразу на всю таблицу 
         const target = event.target;// при клике на определенную ячейку таблицы выдает нам td?
@@ -84,6 +156,7 @@ document.addEventListener(`DOMContentLoaded`, () => {
         blockChoice.style.display = `none`;
         blockCustomer.style.display = `block`;
         btnExit.style.display = `block`;
+        document.getElementById(`deadline`).value = `${todayDay()}`;
     });
 
     freelancer.addEventListener(`click`, () => {
@@ -148,10 +221,12 @@ document.addEventListener(`DOMContentLoaded`, () => {
         });
         
         formCustomer.reset(); // сбрасываем значение в форме до значений по умолчанию (то, что в value  в формах инпутов)
+        document.getElementById(`deadline`).value = `${todayDay()}`;
 
 
         orders.push(obj); //добавляем заказы в массив заказов
-        console.log('obj: ', orders);
+        // console.log('obj: ', orders);
+        toStorage();//добавление данных в локал сторедж
 
     });
 
