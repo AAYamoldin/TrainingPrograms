@@ -28,12 +28,17 @@ document.addEventListener(`DOMContentLoaded`, () => {
         return titles[n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2];
       };
 
-    const calcDeadline = (deadline) => {
+    const calcDeadline = (date) => {
         let today = new Date();
-        let date2 = new Date(deadline);
-        let daysLag = Math.ceil(Math.abs(date2.getTime() - today.getTime()) / (1000 * 3600));
-        return ( `${daysLag} ${declOfNum(daysLag, [`час`, `часа`, `часов`])}`)
-    };
+        let deadline = new Date(date);
+        let remaining = Math.ceil(Math.abs(deadline.getTime() - today.getTime()) / (1000 * 3600 * 24));
+        
+        if (remaining < 2) {
+            remaining = Math.ceil(Math.abs(deadline.getTime() - today.getTime()) / (1000 * 3600));
+            return ( `${remaining} ${declOfNum(remaining, [`час`, `часа`, `часов`])}`);
+        }else{
+        return ( `${remaining} ${declOfNum(remaining, [`день`, `дня`, `дней`])}`);
+    }};
 
     const renderOrders = (() => {
         ordersTable.textContent = ``;//обнуление заказов, чтобы постоянно не накапливалист строки таблицы, т.е. каждый раз переписываем ее заново с помощью inner.HTML
@@ -49,6 +54,7 @@ document.addEventListener(`DOMContentLoaded`, () => {
 					<td class="${order.currency}"></td>
 					<td>${calcDeadline(order.deadline)}</td>
 </tr>`
+// обрати внимание, что в шаблонных строках обратные кавычки
 // data-number-order это датаатрибут
 //первый td значение в первом столбце(номер заказа)
 // второй это заголовок из задания  
@@ -127,7 +133,7 @@ document.addEventListener(`DOMContentLoaded`, () => {
        currencyBlock.className = `currency_img`; //по умолчанию перед добавление нового класса сбрасываем его в currency_img
        currencyBlock.classList.add(currency);//альтернативный   метод
        countBlock.textContent = amount;
-       if (order.phone) phoneBlock.href = `tel: ` + phone;//tel: запускает либо скайп либо телефон и тп
+       if (order.phone && phoneBlock) phoneBlock.href = `tel: ` + order.phone;//tel: запускает либо скайп либо телефон и тп
     //    console.log('firstNameBlock: ', firstNameBlock);
 
 
@@ -156,7 +162,8 @@ document.addEventListener(`DOMContentLoaded`, () => {
         blockChoice.style.display = `none`;
         blockCustomer.style.display = `block`;
         btnExit.style.display = `block`;
-        document.getElementById(`deadline`).value = `${todayDay()}`;
+        document.getElementById(`deadline`).value = `${todayDay()}`;// значение по умолчанию для срока выполнения
+        document.getElementById(`deadline`).min = `${todayDay()}`; // срок выполнения не раньше сегодня
     });
 
     freelancer.addEventListener(`click`, () => {
