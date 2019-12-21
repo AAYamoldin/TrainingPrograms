@@ -12,7 +12,7 @@ document.addEventListener(`DOMContentLoaded`, () => {
     const modalOrderActive = document.getElementById(`order_active`);// получаем html данные если хотим получить открытый заказ
 
 
-    const orders = JSON.parse(localStorage.getItem(`freeOrders`)) || []; //массив заказов проверяем на наличие заказов в локалсторадже, если их нет, то пустой массив
+    let orders = JSON.parse(localStorage.getItem(`freeOrders`)) || []; //массив заказов проверяем на наличие заказов в локалсторадже, если их нет, то пустой массив
 
     const toStorage = () => {
         localStorage.setItem(`freeOrders`, JSON.stringify(orders));
@@ -230,9 +230,16 @@ document.addEventListener(`DOMContentLoaded`, () => {
         formCustomer.reset(); // сбрасываем значение в форме до значений по умолчанию (то, что в value  в формах инпутов)
         document.getElementById(`deadline`).value = `${todayDay()}`;
 
-
         orders.push(obj); //добавляем заказы в массив заказов
-        // console.log('obj: ', orders);
+        if (orders.length > 1) {
+        let byDate = orders.slice(0);
+        byDate.sort((a,b) => {let first = new Date(a.deadline);
+        let second = new Date(b.deadline);
+        return (first.getTime() - second.getTime());
+    });
+    orders = byDate;
+        };
+
         toStorage();//добавление данных в локал сторедж
 
     });
