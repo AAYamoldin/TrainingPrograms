@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <style>
+    table {
+      border-collapse: collapse;
+    }
+
+    td,
+    th {
+      border: 1px solid black;
+      padding: 3px;
+      text-align: center;
+    }
+
+    th {
+      font-weight: bold;
+      background-color: #E6E6E6;
+    }
+  </style>
+</head>
+
+<body>
+
+
+  <div id="calendar"></div>
+
+  <script>
+    function createCalendar(elem, year, month) {
+      tableHead = `<tr><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th><th>Sun</th></tr>
+`;
+let date1 = new Date (year, month-1, 1);
+let date2 = new Date (year, month, 1 );
+let quantityOfDays = Math.round((date2 - date1) / 1000 / 3600 / 24);
+//для пробелов первого ряда
+let emptyCell = ``;
+for (let probels = 1; probels < date1.getDay(); probels++) {
+    emptyCell += `<td></td>`;
+};
+emptyCell = `<tr>` + emptyCell;
+for (let day = 1; day <= quantityOfDays; day++) {
+    if(!new Date(year, month-1, day).getDay() == 0){
+        emptyCell += `<td>${day}</td>`
+    } else{
+        emptyCell += `<td>${day}</td></tr><tr>`;
+    }
+   
+}
+emptyCell += `</tr>` 
+tableHead += emptyCell;
+elem.innerHTML = `<table> ${tableHead} </table>`;
+}
+    createCalendar(calendar, 2020, 1);
+  </script>
+
+</body>
+</html>
