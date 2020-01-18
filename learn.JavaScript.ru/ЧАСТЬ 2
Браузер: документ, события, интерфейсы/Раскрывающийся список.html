@@ -1,0 +1,37 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    #dropdown-content {display: none;}
+    .knopka::before {content: '▶';} 
+    .nomagic.knopka::before {content: '▼';}
+  </style>
+</head>
+<body>
+
+    <div class = "dropdown">
+   <a class = "knopka"> Сладости (нажми меня)!</a>
+    <ul id = "dropdown-content">
+    <li>Пирожное</li>
+    <li>Пончик</li>
+    <li>Мёд</li>
+  </ul>
+      
+  </div>
+
+  </body>
+  <script>
+    let knopka = document.querySelector('.knopka');
+  knopka.addEventListener('click', function() {
+ if (document.getElementById('dropdown-content').style.display == "" || document.getElementById('dropdown-content').style.display == "none"){
+      document.getElementById('dropdown-content').style.display = 'block'
+      knopka.classList.toggle('nomagic');
+    } else {
+    document.getElementById('dropdown-content').style.display = "none"
+    knopka.classList.toggle('nomagic', false);
+    }}
+    )
+    
+  </script>
+</html>
