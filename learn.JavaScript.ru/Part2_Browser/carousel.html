@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Carousel</title>
+</head>
+<body>
+<style>
+ body {
+  padding: 10px;
+  } 
+  
+  .carousel {
+  position: relative;
+  width: 390px;
+  padding: 10px 40px;
+  border: 1px solid #CCC;
+  border-radius: 15px;
+  background: #eee;
+}
+
+.carousel img {
+  width: 130px;
+  height: 130px;
+  /* делаем этот элемент блочным, чтобы убрать лишнее пространство вокруг картинок */
+  display: block;
+}
+
+ .arrow {
+  position: absolute;
+  top: 60px;
+  padding: 0;
+  background: #ddd;
+  border-radius: 15px;
+  border: 1px solid gray;
+  font-size: 24px;
+  line-height: 24px;
+  color: #444;
+  display: block;
+}
+
+.arrow:focus {
+  outline: none;
+}
+
+.arrow:hover {
+  background: #ccc;
+  cursor: pointer;
+}
+
+.prev {
+  left: 7px;
+}
+
+.next {
+  right: 7px;
+} 
+
+.gallery {
+  width: 390px;
+  overflow: hidden;
+}
+
+.gallery ul {
+  height: 130px;
+  width: 9999px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  transition: margin-left 250ms;
+  font-size: 0;
+}
+
+.gallery li {
+  display: inline-block;
+}
+  </style>
+  <div id="carousel" class="carousel">
+    <button class="arrow prev">⇦</button>
+    <div class="gallery">
+      <ul class="images">
+        <li><img src="https://ru.js.cx/carousel/1.png"></li>
+        <li><img src="https://ru.js.cx/carousel/2.png"></li>
+        <li><img src="https://ru.js.cx/carousel/3.png"></li>
+        <li><img src="https://ru.js.cx/carousel/4.png"></li>
+        <li><img src="https://ru.js.cx/carousel/5.png"></li>
+        <li><img src="https://ru.js.cx/carousel/6.png"></li>
+        <li><img src="https://ru.js.cx/carousel/7.png"></li>
+        <li><img src="https://ru.js.cx/carousel/8.png"></li>
+        <li><img src="https://ru.js.cx/carousel/9.png"></li>
+        <li><img src="https://ru.js.cx/carousel/10.png"></li>
+      </ul>
+    </div>
+    <button class="arrow next">⇨</button>
+  </div>
+
+  <script>
+    //ox size
+    let oxSizeOfPicture = document.querySelector('.carousel img').width;
+    
+    //кол-во картинок в кадре
+    let numberOfImagesPerFrame = Math.round((window.getComputedStyle(document.querySelector('.carousel')).width).split('px')[0] / oxSizeOfPicture);
+    //console.log('numberOfImagesPerFrame: ', numberOfImagesPerFrame);
+
+    //размер одного скрола
+    let fullSizeOfScroll = oxSizeOfPicture * numberOfImagesPerFrame;
+    // console.log('fullSizeOfScroll: ', fullSizeOfScroll);
+
+    //кол-во картинок
+    let numberOfImages = document.querySelector('.gallery').querySelectorAll('li').length;
+    //console.log('numberOfImages: ', numberOfImages);
+    
+    //кол-во полных прокруток(скролов)
+    let quantityOfFullFrames = Math.trunc(numberOfImages / numberOfImagesPerFrame);
+    // console.log('quantityOfFullFrames: ', quantityOfFullFrames);
+    
+    //число маргина для заполненных кадров(-1 тк отсчет с нуля)
+    let wholeFullMarginLeft = (quantityOfFullFrames-1) * fullSizeOfScroll;
+    console.log('wholeFullMarginLeft: ', wholeFullMarginLeft);
+
+    //с учетом кол-ва картинок полное число скрола
+    let fullMarginLeft = numberOfImages * oxSizeOfPicture;
+    //console.log('fullMarginLeft: ', fullMarginLeft);
+
+    //если число каринок не кратно числу картинок, помещающихся в полном скроле, то остаток и минус нулевой скролл
+    let restOfMargin = fullMarginLeft - wholeFullMarginLeft - fullSizeOfScroll;
+    console.log('restOfMargin: ', restOfMargin);
+
+
+
+    let nextButton = document.querySelector('.next');
+    // console.log('nextButton : ', nextButton );
+    
+    let prevButton = document.querySelector('.prev');
+    
+    // let marginLeft = document.querySelector('.gallery ul').style.marginLeft;
+    // marginLeft = +(marginLeft.split('px')[0]);
+   // console.log('marginLeft: ', marginLeft);
+  
+   function margin() {
+    // console.log('на входе маргина', document.querySelector('.gallery ul').style.marginLeft);
+    let marginLeft = document.querySelector('.gallery ul').style.marginLeft;
+    marginLeft = +(marginLeft.split('px')[0]);
+    return marginLeft;
+   }
+
+
+   function marginUpChange() {
+     if (margin() ==  -wholeFullMarginLeft){
+      document.querySelector('.gallery ul').style.marginLeft = (margin() - restOfMargin) + "px"; 
+      return;
+     };
+     if (margin() < -wholeFullMarginLeft){
+       return;
+     }    
+     document.querySelector('.gallery ul').style.marginLeft = (margin() - fullSizeOfScroll) + "px";
+   }
+
+
+   function marginDownChange(){
+     if (margin() >= 0){
+       return;
+     }
+     if (margin() == -wholeFullMarginLeft-restOfMargin){
+      document.querySelector('.gallery ul').style.marginLeft = -wholeFullMarginLeft + "px";
+      return;
+     }
+    document.querySelector('.gallery ul').style.marginLeft = (margin() + fullSizeOfScroll) + "px";
+  }
+    
+   nextButton.addEventListener('click', () => marginUpChange());
+   prevButton.addEventListener('click', () => marginDownChange());
+  </script>
+</body>
+</html>
