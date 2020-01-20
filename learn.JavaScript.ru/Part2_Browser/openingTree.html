@@ -5,7 +5,9 @@
 </head>
 <body>
 <style>
-
+span:hover {text-decoration: underline;
+font-weight: bolder;
+cursor: pointer; }
 </style>
   <ul class="tree" id="tree">
     <li>Животные
@@ -48,17 +50,20 @@
     for (let li of tree.querySelectorAll('li')) {
       let span = document.createElement('span');//делаем пару спанов(открытый, закрытый)
       li.prepend(span);//пару спановских тегов ставим перед каждой ссылкой
-      span.append(span.nextSibling); // поместить текстовый узел внутрь элемента <span>
+      span.append(span.nextSibling); // поместить текстовый узел внутрь элемента  <span>
     }
     
     tree.addEventListener('click', function(event){
         let target = event.target;
-
-        console.log('event', target.firstChild);
-        console.log(target)
-        //console.log('event', target.nodeValue);
-       // console.log(target.querySelectorAll('li')[0])
-    })
+        // console.log('target : ', target.tagName );
+        if (target.tagName == 'SPAN' && target.parentNode.querySelector('ul')) {
+        //console.log('in if', target.parentNode.querySelector('ul'));
+        if (target.parentNode.querySelector('ul').style.display == 'block' || target.parentNode.querySelector('ul').style.display == ''){
+        target.parentNode.querySelector('ul').style.display = 'none'
+        }else{
+            target.parentNode.querySelector('ul').style.display = 'block'  
+        }
+    }})
 </script>
 </body>
 </html>
