@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+</head>
+<body>
+<style>
+
+</style>
+  <ul class="tree" id="tree">
+    <li>Животные
+      <ul>
+        <li>Млекопитающие
+          <ul>
+            <li>Коровы</li>
+            <li>Ослы</li>
+            <li>Собаки</li>
+            <li>Тигры</li>
+          </ul>
+        </li>
+        <li>Другие
+          <ul>
+            <li>Змеи</li>
+            <li>Птицы</li>
+            <li>Ящерицы</li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li>Рыбы
+      <ul>
+        <li>Аквариумные
+          <ul>
+            <li>Гуппи</li>
+            <li>Скалярии</li>
+          </ul>
+        </li>
+        <li>Морские
+          <ul>
+            <li>Морская форель</li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+<script>
+   //оборачиваем в спаны все линки, чтобы подрезать их по размеру
+    for (let li of tree.querySelectorAll('li')) {
+      let span = document.createElement('span');//делаем пару спанов(открытый, закрытый)
+      li.prepend(span);//пару спановских тегов ставим перед каждой ссылкой
+      span.append(span.nextSibling); // поместить текстовый узел внутрь элемента <span>
+    }
+    
+    tree.addEventListener('click', function(event){
+        let target = event.target;
+
+        console.log('event', target.firstChild);
+        console.log(target)
+        //console.log('event', target.nodeValue);
+       // console.log(target.querySelectorAll('li')[0])
+    })
+</script>
+</body>
+</html>
