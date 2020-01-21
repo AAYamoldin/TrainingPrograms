@@ -1,0 +1,72 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      height: 2000px;
+      /* добавим body прокрутку, подсказка должна работать и с прокруткой */
+    }
+
+    .tooltip {
+      /* немного стилизуем подсказку, можете использовать свои стили вместо этих */
+      position: absolute;
+      padding: 10px 20px;
+      border: 1px solid #b3c9ce;
+      border-radius: 4px;
+      text-align: center;
+      font: italic 14px/1.3 sans-serif;
+      color: #333;
+      background: #fff;
+      box-shadow: 3px 3px 3px rgba(0, 0, 0, .3);
+      margin-top: 5px;
+      margin-left: -15px;
+
+    }
+  </style>
+</head>
+
+<body>
+
+  <p>ЛяЛяЛя ЛяЛяЛя ЛяЛяЛя ЛяЛяЛя ЛяЛяЛя ЛяЛяЛя ЛяЛяЛя ЛяЛяЛя ЛяЛяЛя</p>
+  <p>ЛяЛяЛя ЛяЛяЛя ЛяЛяЛя ЛяЛяЛя ЛяЛяЛя ЛяЛяЛя ЛяЛяЛя ЛяЛяЛя ЛяЛяЛя</p>
+
+  <button data-tooltip="эта подсказка должна быть длиннее, чем элемент">Короткая кнопка</button>
+  <button data-tooltip="HTML<br>подсказка">Ещё кнопка</button>
+
+  <p>Прокрутите страницу, чтобы кнопки оказались у верхнего края, а затем проверьте правильно ли выводятся подсказки.</p>
+
+
+  <script>
+      function showHint(event){
+        if (event.target.dataset.tooltip){
+            let div = document.createElement('div');
+            div.className = "tooltip";
+            div.innerHTML = `${event.target.dataset.tooltip}`;
+            let button = event.target;
+            button.append(div)
+            let divDomRect = div.getBoundingClientRect();//высота от верхнего края(y) сам блок (height)
+            let buttonHeight = window.getComputedStyle(button).height.split('px')[0];//высота кнопки по которой кликнули
+            let intervalFromButton = window.getComputedStyle
+            (document.querySelector('.tooltip')).marginTop.split('px')[0];//размер отступа от границы
+            if (divDomRect.y >  +divDomRect.height + +buttonHeight + +intervalFromButton){
+                let initialBottomDiv = window.getComputedStyle
+                (document.querySelector('.tooltip')).bottom.split('px')[0];//изначальная нижняя граница diva с подсказкой
+                div.style.bottom = +initialBottomDiv + ( +divDomRect.height + +buttonHeight + +intervalFromButton) + 'px';//поднимаем div на нужную величину
+            }
+        }
+      }
+      function hideHint(event){
+        if(event.target.dataset.tooltip){
+        let hint = document.getElementsByClassName('tooltip');
+        hint[0].style.display = 'none'
+        hint[0].remove();
+          }
+      }
+    document.addEventListener('mouseover', (event) => showHint(event));
+    document.addEventListener('mouseout', (event) => hideHint(event));
+  </script>
+
+</body>
+</html>
