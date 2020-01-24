@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <style>
+    #contents {
+      padding: 5px;
+      border: 1px green solid;
+    }
+  </style>
+</head>
+
+<body>
+
+  <fieldset id="contents">
+    <legend>#contents</legend>
+    <p>
+      Как насчёт того, чтобы прочитать <a href="http://wikipedia.org">Википедию</a> или посетить <a href="http://w3.org"><i>W3.org</i></a> и узнать о современных стандартах?
+    </p>
+  </fieldset>
+
+  <script>
+      function catchleave(event) {
+          let target = event.target;
+          if (target.closest('a').href){
+              let isLeaving = confirm(`Do you want to go to ${target.closest('a').href}`);
+              if (!isLeaving) event.preventDefault();
+          }
+          
+      }
+      contents.addEventListener('click', (event) => catchleave(event));
+  </script>
+</body>
+</html>
