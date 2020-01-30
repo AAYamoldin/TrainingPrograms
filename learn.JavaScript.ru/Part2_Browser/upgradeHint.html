@@ -1,0 +1,108 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      height: 2000px;
+      /* подсказка должна работать и после прокрутки страницы */
+    }
+
+    .tooltip {
+      position: fixed;
+      z-index: 100;
+
+      padding: 10px 20px;
+    
+      border: 1px solid #b3c9ce;
+      border-radius: 4px;
+      text-align: center;
+      font: italic 14px/1.3 sans-serif;
+      color: #333;
+      background: #fff;
+      box-shadow: 3px 3px 3px rgba(0, 0, 0, .3);
+    }
+
+    #house {
+      margin-top: 50px;
+      width: 400px;
+      border: 1px solid brown;
+    }
+
+    #roof {
+      width: 0;
+      height: 0;
+      border-left: 200px solid transparent;
+      border-right: 200px solid transparent;
+      border-bottom: 20px solid brown;
+      margin-top: -20px;
+    }
+
+    p {
+      text-align: justify;
+      margin: 10px 3px;
+    }
+  </style>
+</head>
+
+<body>
+
+
+  <div data-tooltip="Здесь домашний интерьер" id="house">
+    <div data-tooltip="Здесь крыша" id="roof"></div>
+
+    <p>Жили-были на свете три поросенка. Три брата. Все одинакового роста, кругленькие, розовые, с одинаковыми веселыми хвостиками.</p>
+
+    <p>Даже имена у них были похожи. Звали поросят: Ниф-Ниф, Нуф-Нуф и Наф-Наф. Все лето они кувыркались в зеленой траве, грелись на солнышке, нежились в лужах.</p>
+
+    <p>Но вот наступила осень. Солнце уже не так сильно припекало, серые облака тянулись над пожелтевшим лесом.</p>
+
+    <p>- Пора нам подумать о зиме, - сказал как-то Наф-Наф. <a href="https://ru.wikipedia.org/wiki/%D0%A2%D1%80%D0%B8_%D0%BF%D0%BE%D1%80%D0%BE%D1%81%D1%91%D0%BD%D0%BA%D0%B0" data-tooltip="Читать далее…">Наведи курсор на меня</a></p>
+
+  </div>
+
+  <script>
+      function findHint(target){
+        let hint = mouseOnElem.dataset.tooltip;//есть ди дата атрибут с подсказкой на этом элементе?
+          if (!hint){
+            mouseOnElem = mouseOnElem.parentElement;//тогда поднимаемся к родителю
+            hint = mouseOnElem.dataset.tooltip;
+          }
+       return hint;   
+      }
+
+      function showHint(event){
+        window.mouseOnElem  = event.target;//на каком элементе мышка
+        window.hint = findHint(mouseOnElem);
+        if (hint){
+            let div = document.createElement('div');//создаем див для подсказки
+            div.className = "tooltip";// присваиваем этому диву имя класса
+            div.innerHTML = `${hint}`;// запихиваем подсказку внутрь этого дива
+            mouseOnElem.append(div);// запихиваем созданный див в хтмл код страницы
+
+            //привязываем подсказку на 5px выше элемента над которым она появилась
+            let divDomRectHint = div.getBoundingClientRect();//координаты подсказки относительно просматриваемой области 
+            let heighHint = divDomRectHint.height;//высота подсказки
+            let divDomRectElem = mouseOnElem.getBoundingClientRect();//координаты элемента на котором она вылазит относительно просматриваемого окна
+            let topIntervalElem = divDomRectElem.y;//расстояние между верхней точкой элемента, на котором должна вылазить подсказка и границей видимого окна
+                if (+heighHint < (+topIntervalElem + 5) ){
+                div.style.top = (+topIntervalElem - heighHint - 5 ) + 'px';
+                }else{
+                    div.style.top = (+divDomRectElem.bottom  + 5 ) + 'px';
+                }
+      }
+      }
+      function hideHint(event){
+        if(hint){
+        let hint = document.getElementsByClassName('tooltip');
+        hint[0].style.display = 'none'
+        hint[0].remove();
+          }
+      }
+    house.addEventListener('mouseover', (event) => showHint(event));
+    house.addEventListener('mouseout', (event) => hideHint(event));
+  </script>
+
+</body>
+</html>
