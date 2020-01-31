@@ -1,0 +1,159 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Документ</title>
+</head>
+
+<body>
+
+  <div id="elem" class="clock">
+    <span class="hours">12</span> :
+    <span class="minutes">30</span> :
+    <span class="seconds">00</span>
+  </div>
+
+  <div id="tooltip" hidden>Подсказка</div>
+
+
+<style>
+.hours {
+  color: red;
+}
+
+.minutes {
+  color: green;
+}
+
+.seconds {
+  color: blue;
+}
+
+.clock {
+  border: 1px dashed black;
+  padding: 5px;
+  display: inline-block;
+  background: yellow;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.tooltip {
+  position: absolute;
+  background: #eee;
+  border: 1px brown solid;
+  padding: 3px;
+}
+</style>
+
+  <script>
+
+'use strict';
+
+// Здесь показан набросок класса
+// с возможностями, которые нам понадобятся
+class HoverIntent {
+
+  constructor({
+    sensitivity = 0.1, // скорость ниже 0.1px/ms значит "курсор на элементе"
+    interval = 100, // измеряем скорость каждые 100ms: определяем дистанцию между предыдущей и новой позицией.
+    elem,
+    over,
+    out
+  }) {
+    this.sensitivity = sensitivity;
+    this.interval = interval;
+    this.elem = elem;
+    this.over = over;
+    this.out = out;
+
+    // убедитесь, что "this" сохраняет своё значение для обработчиков.
+    this.onMouseMove = this.onMouseMove.bind(this);
+    this.onMouseOver = this.onMouseOver.bind(this);
+    this.onMouseOut = this.onMouseOut.bind(this);
+
+    // назначаем обработчики
+   // elem.addEventListener("mouseover", this.onMouseOver);
+   // elem.addEventListener("mouseout", this.onMouseOut);
+    elem.addEventListener('mouseenter', this.onMouseOver);
+    elem.addEventListener('mouseleave', this.onMouseOut);
+
+  }
+
+  onMouseOver(event) {
+    // включаем при захождении курсора на часы периодическую функцию 
+  //console.log("!")
+ this.iswork = true;
+ this.onMouseMove(event);
+  }
+
+  
+  onMouseOut(event) {
+  this.iswork = false;
+  }
+
+  
+  
+  onMouseMove(event) {    
+    //console.log(event);
+    //console.log('onmouesON!')
+    //console.log(this.iswork)
+    
+    
+    if(event.relatedTarget == null || event.relatedTarget.tagName == 'HTML'){//первый заход на часы
+      var xPrevious = event.clientX;
+      
+      // console.log('xPrevious: ', xPrevious);
+      var yPrevious = event.clientY;
+      var xNow = xPrevious;
+      var yNow = yPrevious;
+      // console.log('yPrevious: ', yPrevious);
+    //  console.log('зашел в первый иф');
+    }
+      //если первый заход уже был
+      let interval = setInterval(() =>{
+      if (this.iswork == false) clearInterval(interval);//остановка интервала
+      //console.log('yPrevious в интервале: ', yPrevious);console.log('xPrevious в интервале: ', xPrevious);
+      elem.addEventListener('mousemove', (ev) =>{
+      //console.log('yPrevious в скорости: ', yPrevious);console.log('xPrevious в в скорости ', xPrevious);
+      xNow = ev.clientX;//координата Х в данный момент времени
+      yNow = ev.clientY;//координата У в данный момент времени
+      })
+      let distantion = Math.sqrt(Math.pow(xNow-xPrevious,2) + Math.pow(yNow-yPrevious,2));//расстояние пройденное мышью
+      let velocity = distantion/this.interval;
+      
+      if (+velocity < +this.sensitivity){
+        this.over();
+      }else{
+        this.out(); 
+      }
+      xPrevious = xNow;
+      yPrevious = yNow;
+  }, this.interval);
+  }
+  
+  
+  destroy() {
+    /* ваш код для отключения функционала и снятия всех обработчиков */
+    }
+
+}
+    // для демо
+  setTimeout(function() {
+      new HoverIntent({
+        elem,
+        over() {
+          tooltip.hidden = false;
+        },
+        out() {
+          tooltip.hidden = true;
+        }
+      });
+    }, 2000);
+
+  </script>
+
+</body>
+</html>
