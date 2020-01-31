@@ -84,60 +84,46 @@ class HoverIntent {
 
   onMouseOver(event) {
     // включаем при захождении курсора на часы периодическую функцию 
-  //console.log("!")
  this.iswork = true;
  this.onMouseMove(event);
   }
-
-  
   onMouseOut(event) {
   this.iswork = false;
   }
-
-  
-  
-  onMouseMove(event) {    
-    //console.log(event);
-    //console.log('onmouesON!')
-    //console.log(this.iswork)
-    
-    
-    if(event.relatedTarget == null || event.relatedTarget.tagName == 'HTML'){//первый заход на часы
+  onMouseMove(event) {     
+    if(event.relatedTarget == null || event.relatedTarget.tagName == 'HTML'){//первый заход на часы задаем параметры координат
       var xPrevious = event.clientX;
-      
-      // console.log('xPrevious: ', xPrevious);
       var yPrevious = event.clientY;
       var xNow = xPrevious;
       var yNow = yPrevious;
-      // console.log('yPrevious: ', yPrevious);
-    //  console.log('зашел в первый иф');
     }
-      //если первый заход уже был
-      let interval = setInterval(() =>{
-      if (this.iswork == false) clearInterval(interval);//остановка интервала
-      //console.log('yPrevious в интервале: ', yPrevious);console.log('xPrevious в интервале: ', xPrevious);
+      //блок подсчета скорости
+
+      let interval = setInterval(() =>{//каждые this.interval секунд снимаем координаты и вычисляем скорость
+      if (this.iswork == false) clearInterval(interval);//остановка вычислений при вызове "onMouseOut"
       elem.addEventListener('mousemove', (ev) =>{
-      //console.log('yPrevious в скорости: ', yPrevious);console.log('xPrevious в в скорости ', xPrevious);
       xNow = ev.clientX;//координата Х в данный момент времени
       yNow = ev.clientY;//координата У в данный момент времени
       })
       let distantion = Math.sqrt(Math.pow(xNow-xPrevious,2) + Math.pow(yNow-yPrevious,2));//расстояние пройденное мышью
-      let velocity = distantion/this.interval;
+      let velocity = distantion/this.interval;//вычисление скорости
       
-      if (+velocity < +this.sensitivity){
+      // !! не работает
+      if (+velocity < +this.sensitivity){//если скорость меньше требуемой показывай подсказку
         this.over();
+        //tooltip.hidden = false;
       }else{
         this.out(); 
+        //tooltip.hidden = true;
+
       }
       xPrevious = xNow;
       yPrevious = yNow;
   }, this.interval);
-  }
-  
-  
-  destroy() {
-    /* ваш код для отключения функционала и снятия всех обработчиков */
-    }
+  }  
+  // destroy() {
+  //   /* ваш код для отключения функционала и снятия всех обработчиков */
+  //   }
 
 }
     // для демо
