@@ -1,0 +1,59 @@
+
+.title {
+    text-align: center;
+}
+
+.darkblue {
+    color: darkblue;
+}
+
+.tabname td {
+    font-weight: bold;
+    font-size: 30px;
+    font-family: Sarai, monospace;
+    text-align: center;
+}
+
+.firstcol {
+    column-span: 1;
+    font-size: 20px;
+    font-weight: bold;
+    font-family: monospace;
+    text-align: left;
+    background-color: beige;
+    opacity: 0.7;
+
+}
+
+.secondcol {
+    column-span: 3;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: left;
+    font-family: Garuda, fantasy;
+}
+
+.thirdcol {
+    column-span: 3;
+    font-size: 20px;
+    font-weight: bold;
+    font-family: Garuda, fantasy;
+    text-align: left;
+}
+.firstable {
+    text-align: center;
+    border: 2px solid darkblue;
+    background-image: url("./codecademy-1-1.png");
+    background-position: center;
+    background-size: cover;
+    background-color: transparent;
+    position: relative;
+}
+
+thead {
+    background-color: azure;
+}
+
+
+
+
