@@ -1,0 +1,41 @@
+.header {
+    background-image: url("pattern.jpeg");
+    background-size: cover;
+    text-align: center;
+    font-family: Helvetica, serif;
+    font-size: 100px;
+    font-weight: bold;
+    color: khaki;
+}
+
+.title {
+    font-family: Helvetica, serif;
+    font-size: 32px;
+    font-weight: bold;
+    color: white;
+    background-color: mediumspringgreen;
+}
+
+.itemName {
+    font-weight: bold;
+    font-family: Garuda, monospace;
+    font-size: 25px;
+}
+
+.text {
+    font-size: 20px;
+}
+
+.colorText {
+    font-family: Helvetica, serif;
+    font-weight: bold;
+    color: blue;
+}
+
+.lightcoralBkg {
+    background-color: lightcoral;
+}
+
+.skyblueBkg {
+    background-color: skyblue;
+}
