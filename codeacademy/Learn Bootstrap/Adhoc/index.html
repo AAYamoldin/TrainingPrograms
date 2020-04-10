@@ -8,11 +8,12 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <title>Adhoc</title>
 </head>
-
 <body>
 <!-- Navbar Component -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">Navbar</a>
+    <a class="navbar-brand" href="#">
+        <img src="images/logo.png" alt="adhoc logo">
+    </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -23,43 +24,35 @@
                 <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Link</a>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Dropdown
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="#">Action</a>
-                    <a class="dropdown-item" href="#">Another action</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Something else here</a>
-                </div>
+                <a class="nav-link" href="#">About Us</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                <a class="nav-link" href="#">Our Team</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Contact Us</a>
             </li>
         </ul>
-        <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form>
     </div>
 </nav>
 
 <!-- Jumbotron -->
-<div style="background:url(images/jumbotron.png) no-repeat; background-size: cover;">
-
+<div class="jumbotron jumbotron-fluid" style="background:url(images/jumbotron.png) no-repeat; background-size: cover;">
+    <div class="container bg-secondary">
+        <h1 class="display-3 text-white text-center">Administration made easy</h1>
+        <p class="lead text-white text-center">Adhoc is an on-demand administrative service for your company growth</p>
+    </div>
 </div>
+
 
 <!-- Container -->
 <div class="container">
     <!-- Quote Section -->
     <div class="row">
         <div class="col">
-            <h2>"Thanks to Adhoc we now have beautiful and faithful service every
+            <h2 class="font-italic font-weight-light text-left">"Thanks to Adhoc we now have beautiful and faithful service every
                 day. Our customers are happy and engagement has drastically increased. Highly recommend!"</h2>
-            <p>-Dave Ellavar, <span>Academy of Code</span></p>
+            <p class="text-right font-italic font-weight-bold">-Dave Ellavar, <span class="font-italic font-weight-light">Academy of Code</span></p>
         </div>
     </div>
     <hr>
@@ -67,32 +60,49 @@
     <!-- Why Adhoc? Text -->
     <div class="row">
         <div class="col">
-            <h2>Why Adhoc?</h2>
+            <h2 class="display-4 text-center">Why Adhoc?</h2>
         </div>
     </div>
 
     <!-- Image Reasons Section -->
     <div class="row">
-        <div class="col">
+        <div class="col-8 col-md-4">
+            <div class="card border-white">
+                <img class="card-img-top" src="images/experienced.png" alt="Experienced card">
+                <div class="card-body">
+                    <p class="card-text text-center">Over 9000 happy clients, and we learn something new from each one</p>
+                </div>
+            </div>
             <!-- First card goes here -->
-
         </div>
 
-        <div class="col">
+        <div class="col-8 col-md-4">
+            <div class="card border-white">
+                <img class="card-img-top" src="images/fun.png" alt="Fun card">
+                <div class="card-body">
+                    <p class="card-text text-center">Administration? Fun? Yea, somehow we make it happen</p>
+                </div>
+            </div>
             <!-- Second card goes here -->
-
         </div>
 
-        <div class="col">
+        <div class="col-8 col-md-4">
             <!-- Third card goes here -->
+            <div class="card border-white">
+                <img class="card-img-top" src="images/smart.png" alt="Smart Card">
+                <div class="card-body">
+                    <p class="card-text text-center">Innovate solutions to the trickest of everyday tasks.</p>
+                </div>
+            </div>
 
         </div>
     </div>
 
+    <div class="rounded bg-dark">
     <!-- Meet the Team Section -->
     <div class="row">
         <div class="col">
-            <h2>Meet the Team</h2>
+            <h2 class="text-white text-center display-4 ">Meet the Team</h2>
         </div>
     </div>
 
@@ -103,16 +113,19 @@
             <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
                 <div class="carousel-inner">
                     <div class="carousel-item active">
-                        <img src="..." class="d-block w-100" alt="...">
+                        <img src="images/amie.png" class="d-block w-100" alt="amines photo">
                     </div>
                     <div class="carousel-item">
-                        <img src="..." class="d-block w-100" alt="...">
+                        <img src="images/andy.png" class="d-block w-100" alt="andies photo">
                     </div>
                     <div class="carousel-item">
-                        <img src="..." class="d-block w-100" alt="...">
+                        <img src="images/angela.png" class="d-block w-100" alt="angelas photo">
                     </div>
                     <div class="carousel-item">
-                        <img src="..." class="d-block w-100" alt="...">
+                        <img src="images/brian.png" class="d-block w-100" alt="brian photo">
+                        <div class="carousel-caption d-md-block">
+                            <p class="text-center text-white font-weight-light bg-dark rounded-pill"><span class="font-weight-bold">CEO</span>: Brian M.</p>
+                        </div>
                     </div>
                 </div>
                 <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
@@ -126,11 +139,11 @@
             </div>
         </div>
     </div>
-
+    </div>
 </div>
 
 <!-- Footer -->
-<footer>2019 Adhoc &copy;</footer>
+<footer class="text-center">2020 Adhoc &copy;</footer>
 
 <!-- Bootstrap's JavaScript Files -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
