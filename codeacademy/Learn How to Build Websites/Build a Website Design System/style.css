@@ -9,3 +9,17 @@
     .container { max-width: 2000px; }
 
 }
+@media only screen and (min-width: 2000px){
+    .carousel-inner img {
+        height: auto;
+        width: 100%;
+        padding-left: 500px;
+    }
+}
+
+@media only screen and (max-width: 800px){
+    .carousel-inner img {
+        height: 100%;
+        width: 120%;
+    }
+}
