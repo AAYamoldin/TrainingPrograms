@@ -106,21 +106,24 @@ body {
     background-position: center;
     flex-grow: 1;
     justify-content: center;
-    align-items: flex-end;
+    align-items: center;
+    flex-direction: column;
 }
 
 .text-on-locations{
     display: flex;
     position: relative;
     width: 100%;
-    top: -500px;
     flex-shrink: 1;
 }
 
 .locations {
     display: flex;
-    position: relative;
-    top: 100px;
+    margin-top: 35px;
+    flex-shrink: 1;
+    flex-grow: 1;
+    width: 100%;
+    justify-content: space-around;
 }
 
 .location {
@@ -132,4 +135,34 @@ body {
 .location h3 {
     margin-top: 90px;
     font-weight: normal;
+    font-size: 1.8vw;
+}
+
+.location h2 {
+    font-size: 1.9vw;
+}
+
+.fourth-section {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.fourth-section p {
+    font-size: 2vw;
+}
+
+footer {
+    width: 100%;
+}
+
+.footer {
+    display: flex;
+    flex-grow: 1;
+    width: 100%;
+    margin-left: 30px;
+}
+
+.footer p {
+    font-size: 1.9vw;
 }
