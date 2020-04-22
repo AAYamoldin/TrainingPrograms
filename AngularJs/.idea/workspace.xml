@@ -1,7 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a66787e2-c3a4-4d56-ab77-33a6787dda26" name="Default Changelist" comment="" />
+    <list default="true" id="a66787e2-c3a4-4d56-ab77-33a6787dda26" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/1/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/1/.jshintrc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/1/.travis.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/1/LICENSE" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/1/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/1/app/app.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/1/app/app.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/1/app/core/version/interpolate-filter.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/1/app/core/version/interpolate-filter.spec.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/1/app/core/version/version-directive.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/1/app/core/version/version-directive.spec.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/1/app/core/version/version.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/1/app/core/version/version.spec.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/1/app/index-async.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/1/app/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/1/app/view1/view1.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/1/app/view1/view1.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/1/app/view1/view1.spec.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/1/app/view2/view2.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/1/app/view2/view2.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/1/app/view2/view2.spec.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/1/e2e-tests/protractor.conf.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/1/e2e-tests/scenarios.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/1/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/1/karma.conf.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/1/package-lock.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/1/package.json" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -14,12 +43,14 @@
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
-    <option name="showExcludedFiles" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="dart.analysis.tool.window.visible" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../codeacademy" />
     <property name="nodejs_package_manager_path" value="npm" />
   </component>
   <component name="SvnConfiguration">
@@ -33,16 +64,17 @@
       <option name="presentableId" value="Default" />
       <updated>1585735176108</updated>
       <workItem from="1585735179623" duration="429000" />
+      <workItem from="1587490394959" duration="570000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="1" />
+    <option name="version" value="2" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="399" y="282" width="424" height="506" key="FileChooserDialogImpl" timestamp="1585735603212">
+    <state x="399" y="282" width="424" height="506" key="FileChooserDialogImpl" timestamp="1587490963609">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state x="399" y="282" width="424" height="506" key="FileChooserDialogImpl/0.1080.1920.1080/0.0.1920.1080@0.0.1920.1080" timestamp="1585735603212" />
+    <state x="399" y="282" width="424" height="506" key="FileChooserDialogImpl/0.1080.1920.1080/0.0.1920.1080@0.0.1920.1080" timestamp="1587490963609" />
   </component>
 </project>
