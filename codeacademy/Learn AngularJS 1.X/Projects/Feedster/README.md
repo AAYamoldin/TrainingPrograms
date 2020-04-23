@@ -1,0 +1,2 @@
+##### Feedster is creating an AngularJS app for their news feed. Here is an example https://aayamoldin.github.io/TrainingPrograms/codeacademy/Learn%20AngularJS%201.X/Projects/Feedster/
+![alt-text](result.png)
