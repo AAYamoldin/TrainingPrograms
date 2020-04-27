@@ -1,0 +1,10 @@
+<a class="button back" href="#/books">Back</a>
+
+<div class="book-detail">
+    <img ng-src={{book.cover}} alt="book cover">
+    <h3 class="title">{{book.title}}  </h3>
+    <p class="author"> {{book.author}} </p>
+    <p class="description"> {{book.description}} </p>
+
+    <a class="button" href="#/books/{{ currentBookIndex }}/chapters/0">Read</a>
+</div>

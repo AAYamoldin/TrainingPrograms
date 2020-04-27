@@ -1,0 +1,9 @@
+<a class="button back" href="#/books/{{ currentBook }}">Back</a>
+<div class="chapter">
+    <p><span class="title"> {{book.title}} </span> <span class="author"> {{book.author}} </span></p>
+    <h2 class="chapter-title"> {{chapter[currentChapterIndex].title}} </h2>
+
+    <p ng-repeat="paragraph in chapter[currentChapterIndex].paragraphs">{{ paragraph }}</p>
+
+    <a class="button next" href="#/books/{{ currentBookIndex }}/chapters/{{ nextChapterIndex }}">Next</a>
+</div>
