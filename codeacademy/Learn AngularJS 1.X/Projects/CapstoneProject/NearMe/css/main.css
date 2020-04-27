@@ -47,3 +47,8 @@ html, body, #map_canvas {
     right: 0;
     left: 0;
 }
+
+.about {
+    padding-top: 50px;
+    text-align: center;
+}
