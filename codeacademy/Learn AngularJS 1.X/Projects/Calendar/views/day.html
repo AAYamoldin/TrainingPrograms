@@ -1,0 +1,9 @@
+<!-- Format a date so it displays in the format "Friday 1/16" -->
+<h2 class="date"> {{day.date | date}} </h2>
+
+<div class="event" ng-repeat="even in day.events">
+  <a href="#/{{$index}}">
+    <h3 class="name">  {{even.name}}</h3>
+    <p><span class="from">{{even.from | date}}  </span> - <span class="to"> {{even.to | date}} </span></p>
+  </a>
+</div>
