@@ -1,6 +1,7 @@
 // Generated on 2020-05-11 using generator-angular 0.16.0
 'use strict';
-
+grunt.loadNpmTasks('grunt-build-control');
+var pkg = require('./package.json');
 // # Globbing
 // for performance reasons we're only matching one level down:
 // 'test/spec/{,*/}*.js'
@@ -19,6 +20,7 @@ module.exports = function (grunt) {
     cdnify: 'grunt-google-cdn'
   });
 
+
   // Configurable paths for the application
   var appConfig = {
     app: require('./bower.json').appPath || 'app',
@@ -27,6 +29,26 @@ module.exports = function (grunt) {
 
   // Define the configuration for all the tasks
   grunt.initConfig({
+    buildcontrol: {
+      options: {
+        dir: 'dist',
+        commit: true,
+        push: true,
+        message: 'Built %sourceName% from commit %sourceCommit% on branch %sourceBranch%'
+      },
+      pages: {
+        options: {
+          remote: 'git@github.com:<username>/<githubrepo>.git',
+          branch: 'gh-pages'
+        }
+      },
+      local: {
+        options: {
+          remote: '../',
+          branch: 'build'
+        }
+      }
+    },
 
     // Project settings
     yeoman: appConfig,
@@ -220,7 +242,7 @@ module.exports = function (grunt) {
             }
           }
       }
-    }, 
+    },
 
     // Renames files for browser caching purposes
     filerev: {
