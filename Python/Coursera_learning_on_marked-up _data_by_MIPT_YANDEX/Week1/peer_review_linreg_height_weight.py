@@ -26,7 +26,7 @@
 
 # **[1].** Если у Вас не установлена библиотека Seaborn - выполните в терминале команду *conda install seaborn*. (Seaborn не входит в сборку Anaconda, но эта библиотека предоставляет удобную высокоуровневую функциональность для визуализации данных).
 
-# In[1]:
+# In[3]:
 
 
 import numpy as np
@@ -38,7 +38,7 @@ get_ipython().run_line_magic('matplotlib', 'inline')
 
 # Считаем данные по росту и весу (*weights_heights.csv*, приложенный в задании) в объект Pandas DataFrame:
 
-# In[2]:
+# In[4]:
 
 
 data = pd.read_csv('weights_heights.csv', index_col='Index')
@@ -51,7 +51,7 @@ data = pd.read_csv('weights_heights.csv', index_col='Index')
 # 
 # **Пример.** Построим гистограмму распределения роста подростков из выборки *data*. Используем метод *plot* для DataFrame *data* c аргументами *y='Height'* (это тот признак, распределение которого мы строим)
 
-# In[3]:
+# In[5]:
 
 
 data.plot(y='Height', kind='hist', 
@@ -66,18 +66,6 @@ data.plot(y='Height', kind='hist',
 
 # **[2]**. Посмотрите на первые 5 записей с помощью метода *head* Pandas DataFrame. Нарисуйте гистограмму распределения веса с помощью метода *plot* Pandas DataFrame. Сделайте гистограмму зеленой, подпишите картинку.
 
-# In[4]:
-
-
-# Ваш код здесь
-
-
-# In[5]:
-
-
-data.head(5)
-
-
 # In[6]:
 
 
@@ -87,6 +75,18 @@ data.head(5)
 # In[7]:
 
 
+data.head(5)
+
+
+# In[8]:
+
+
+# Ваш код здесь
+
+
+# In[9]:
+
+
 data.plot(y='Weight', kind='hist', color='green', title='Weight distribution')
 
 
@@ -94,7 +94,7 @@ data.plot(y='Weight', kind='hist', color='green', title='Weight distribution')
 # 
 # Чтобы проиллюстрировать этот метод, интересней добавить третий признак. Создадим признак *Индекс массы тела* ([BMI](https://en.wikipedia.org/wiki/Body_mass_index)). Для этого воспользуемся удобной связкой метода *apply* Pandas DataFrame и lambda-функций Python.
 
-# In[8]:
+# In[10]:
 
 
 def make_bmi(height_inch, weight_pound):
@@ -102,7 +102,7 @@ def make_bmi(height_inch, weight_pound):
     return (weight_pound / KILO_TO_POUND) /            (height_inch / METER_TO_INCH) ** 2
 
 
-# In[9]:
+# In[11]:
 
 
 data['BMI'] = data.apply(lambda row: make_bmi(row['Height'], 
@@ -111,13 +111,13 @@ data['BMI'] = data.apply(lambda row: make_bmi(row['Height'],
 
 # **[3].** Постройте картинку, на которой будут отображены попарные зависимости признаков , 'Height', 'Weight' и 'BMI' друг от друга. Используйте метод *pairplot* библиотеки Seaborn.
 
-# In[ ]:
+# In[12]:
 
 
 # Ваш код здесь
 
 
-# In[10]:
+# In[13]:
 
 
 sns.pairplot(data)
@@ -127,23 +127,37 @@ sns.pairplot(data)
 
 # **[4]**. Создайте в DataFrame *data* новый признак *weight_category*, который будет иметь 3 значения: 1 – если вес меньше 120 фунтов. (~ 54 кг.), 3 - если вес  больше или равен 150 фунтов (~68 кг.), 2 – в остальных случаях. Постройте «ящик с усами» (boxplot), демонстрирующий зависимость роста от весовой категории. Используйте метод *boxplot* библиотеки Seaborn и метод *apply* Pandas DataFrame. Подпишите ось *y* меткой «Рост», ось *x* – меткой «Весовая категория».
 
-# In[ ]:
+# In[14]:
 
 
 def weight_category(weight):
     pass
     # Ваш код здесь
+    if weight < 120:
+        return 1
+    elif weight >= 150:
+        return 3
+    else:
+        return 2
+    
 
 data['weight_cat'] = data['Weight'].apply(weight_category)
 # Ваш код здесь
+ax = sns.boxplot(x='weight_cat', y='Height', data=data)
+ax.set_xlabel('Весовая категория')
+ax.set_ylabel('Рост')
 
 
 # **[5].** Постройте scatter plot зависимости роста от веса, используя метод *plot* для Pandas DataFrame с аргументом *kind='scatter'*. Подпишите картинку.
 
-# In[ ]:
+# In[15]:
 
 
 # Ваш код здесь
+ax = data.plot(x='Weight', y='Height', kind='scatter')
+ax.set_xlabel('Вес')
+ax.set_ylabel('Рост')
+ax.set_title('Зависимости роста от веса')
 
 
 # ## Задание 2. Минимизация квадратичной ошибки
@@ -154,53 +168,91 @@ data['weight_cat'] = data['Weight'].apply(weight_category)
 # $$error(w_0, w_1) = \sum_{i=1}^n {(y_i - (w_0 + w_1 * x_i))}^2 $$
 # Здесь $n$ – число наблюдений в наборе данных, $y_i$ и $x_i$ – рост и вес $i$-ого человека в наборе данных. 
 
-# In[ ]:
+# In[62]:
 
 
 # Ваш код здесь
+def error(data, w0, w1):
+    error1 = (data.Height-(w0 + w1 * data.Weight))**2
+    return(np.sum(error1))  
 
 
 # Итак, мы решаем задачу: как через облако точек, соответсвующих наблюдениям в нашем наборе данных, в пространстве признаков "Рост" и "Вес" провести прямую линию так, чтобы минимизировать функционал из п. 6. Для начала давайте отобразим хоть какие-то прямые и убедимся, что они плохо передают зависимость роста от веса.
 # 
 # **[7].** Проведите на графике из п. 5 Задания 1 две прямые, соответствующие значениям параметров ($w_0, w_1) = (60, 0.05)$ и ($w_0, w_1) = (50, 0.16)$. Используйте метод *plot* из *matplotlib.pyplot*, а также метод *linspace* библиотеки NumPy. Подпишите оси и график.
 
-# In[ ]:
+# In[17]:
 
 
 # Ваш код здесь
+ax = data.plot(x='Weight', y='Height', kind='scatter')
+ax.set_xlabel('Вес')
+ax.set_ylabel('Рост')
+ax.set_title('Зависимости роста от веса')
+x = np.linspace(np.amin(data.Weight),np.amax(data.Weight), num=len(data))
+y = 60 + 0.05 * x
+y1 = 50 + 0.16 * x
+plt.plot(x,y, color='red')
+plt.plot(x,y1, color='green')
 
 
 # Минимизация квадратичной функции ошибки - относительная простая задача, поскольку функция выпуклая. Для такой задачи существует много методов оптимизации. Посмотрим, как функция ошибки зависит от одного параметра (наклон прямой), если второй параметр (свободный член) зафиксировать.
 # 
 # **[8].** Постройте график зависимости функции ошибки, посчитанной в п. 6, от параметра $w_1$ при $w_0$ = 50. Подпишите оси и график.
 
-# In[ ]:
+# In[18]:
 
 
-# Ваш код здесь
+# Ваш код здесь(нужно уменьшить размер линспейса, чтобы работало быстрее)
+w1 = np.linspace(-5,5,num=100)
+i = 0
+errors = []
+while i < len(w1):
+    er = error(data,50,w1[i])
+    errors.append(er)
+    i = i + 1;
+
+
+# In[19]:
+
+
+plt.plot(w1, errors)
+plt.title('Зависимость функции ошибки от w1')
+plt.xlabel('w1')
+plt.ylabel('error(w0,w1)')
 
 
 # Теперь методом оптимизации найдем "оптимальный" наклон прямой, приближающей зависимость роста от веса, при фиксированном коэффициенте $w_0 = 50$.
 # 
 # **[9].** С помощью метода *minimize_scalar* из *scipy.optimize* найдите минимум функции, определенной в п. 6, для значений параметра  $w_1$ в диапазоне [-5,5]. Проведите на графике из п. 5 Задания 1 прямую, соответствующую значениям параметров ($w_0$, $w_1$) = (50, $w_1\_opt$), где $w_1\_opt$ – найденное в п. 8 оптимальное значение параметра $w_1$. 
 
-# In[ ]:
+# In[20]:
 
 
 # Ваш код здесь
+from scipy.optimize import minimize_scalar
+res = minimize_scalar(lambda w1: error(data, 50, w1), bounds=(-5, 5))
+res.x
 
 
-# In[ ]:
+# In[21]:
 
 
 # Ваш код здесь
+ax = data.plot(x='Weight', y='Height', kind='scatter')
+ax.set_xlabel('Вес')
+ax.set_ylabel('Рост')
+ax.set_title('Зависимости роста от веса')
+x = np.linspace(np.amin(data.Weight),np.amax(data.Weight), num=len(data))
+y = 50 + res.x * x
+plt.plot(x,y, color='red')
 
 
 # При анализе многомерных данных человек часто хочет получить интуитивное представление о природе данных с помощью визуализации. Увы, при числе признаков больше 3 такие картинки нарисовать невозможно. На практике для визуализации данных в 2D и 3D в данных выделаяют 2 или, соответственно, 3 главные компоненты (как именно это делается - мы увидим далее в курсе) и отображают данные на плоскости или в объеме. 
 # 
 # Посмотрим, как в Python рисовать 3D картинки, на примере отображения функции $z(x,y) = sin(\sqrt{x^2+y^2})$ для значений $x$ и $y$ из интервала [-5,5] c шагом 0.25.
 
-# In[ ]:
+# In[22]:
 
 
 from mpl_toolkits.mplot3d import Axes3D
@@ -208,7 +260,7 @@ from mpl_toolkits.mplot3d import Axes3D
 
 # Создаем объекты типа matplotlib.figure.Figure (рисунок) и  matplotlib.axes._subplots.Axes3DSubplot (ось). 
 
-# In[ ]:
+# In[23]:
 
 
 fig = plt.figure()
@@ -233,36 +285,45 @@ plt.show()
 
 # **[10].** Постройте 3D-график зависимости функции ошибки, посчитанной в п.6 от параметров $w_0$ и $w_1$. Подпишите ось $x$ меткой «Intercept», ось $y$ – меткой «Slope», a ось $z$ – меткой «Error».
 
-# In[ ]:
+# In[35]:
 
 
 # Ваш код здесь
-
-
-# In[ ]:
-
-
-# Ваш код здесь
-
-
-# In[ ]:
-
-
-# Ваш код здесь
+myfig = plt.figure()
+myax = myfig.gca(projection='3d')
+w1 = np.linspace(-5,5,num=100)
+w0 = w1
+w0, w1 = np.meshgrid(w0, w1)
+error = (np.resize(data.Height[:len(w1)],(1,len(w1)))-(w0 + w1 * np.resize(data.Weight[:len(w1)],(1,len(w1)))))**2
+surf = myax.plot_surface(w0, w1, error)
+myax.set_xlabel('Intercept')
+myax.set_ylabel('Slope')
+myax.set_zlabel('Error')
+plt.show()
 
 
 # **[11].** С помощью метода *minimize* из scipy.optimize найдите минимум функции, определенной в п. 6, для значений параметра $w_0$ в диапазоне [-100,100] и $w_1$ - в диапазоне [-5, 5]. Начальная точка – ($w_0$, $w_1$) = (0, 0). Используйте метод оптимизации L-BFGS-B (аргумент method метода minimize). Проведите на графике из п. 5 Задания 1 прямую, соответствующую найденным оптимальным значениям параметров $w_0$ и $w_1$. Подпишите оси и график.
 
-# In[ ]:
+# In[67]:
 
 
 # Ваш код здесь
+from scipy.optimize import minimize
+resul = minimize(lambda w: error(data,w[0],w[1]),(0,0),method='L-BFGS-B', bounds=((-100, 100), (-5,5)))
+resul.x
 
 
-# In[ ]:
+# In[69]:
 
 
-# Ваш код здесь
+# Ваш код здесь# Ваш код здесь
+ax = data.plot(x='Weight', y='Height', kind='scatter')
+ax.set_xlabel('Вес')
+ax.set_ylabel('Рост')
+ax.set_title('Зависимости роста от веса')
+x = np.linspace(np.amin(data.Weight),np.amax(data.Weight), num=len(data))
+y = resul.x[0] + resul.x[1] * x
+plt.plot(x,y, color='red')
 
 
 # ## Критерии оценки работы
