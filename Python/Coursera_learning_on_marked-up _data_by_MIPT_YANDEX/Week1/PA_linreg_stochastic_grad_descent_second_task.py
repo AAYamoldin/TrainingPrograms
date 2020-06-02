@@ -203,10 +203,10 @@ def stochastic_gradient_step(X, y, w, train_ind, eta=0.01):
     size_of_matrix = X.shape[0]
     random_string = X[train_ind]
     
-    grad0 =  2 * eta/size_of_matrix * ((linear_prediction(random_string,w) - y[train_ind]) * random_string[0])
-    grad1 =  2 * eta/size_of_matrix * ((linear_prediction(random_string,w) - y[train_ind]) * random_string[1])
-    grad2 =  2 * eta/size_of_matrix * ((linear_prediction(random_string,w) - y[train_ind]) * random_string[2])
-    grad3 =  2 * eta/size_of_matrix * ((linear_prediction(random_string,w) - y[train_ind]) * random_string[3])
+    grad0 =  2 /size_of_matrix * ((linear_prediction(random_string,w) - y[train_ind]) * random_string[0])
+    grad1 =  2 /size_of_matrix * ((linear_prediction(random_string,w) - y[train_ind]) * random_string[1])
+    grad2 =  2 /size_of_matrix * ((linear_prediction(random_string,w) - y[train_ind]) * random_string[2])
+    grad3 =  2 /size_of_matrix * ((linear_prediction(random_string,w) - y[train_ind]) * random_string[3])
     return  w - eta * np.array([grad0, grad1, grad2, grad3])
 
 
@@ -243,7 +243,7 @@ def stochastic_gradient_descent(X, y, w_init, eta=1e-2, max_iter=1e4,
     np.random.seed(seed)
         
     # Основной цикл
-    while weight_dist > min_weight_dist and iter_num < max_iter:
+    while weight_dist > min_weight_dist:
         # порождаем псевдослучайный 
         # индекс объекта обучающей выборки
         random_ind = np.random.randint(X.shape[0])
