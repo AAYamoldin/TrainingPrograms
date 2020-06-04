@@ -1,8 +1,9 @@
-function task1
+
 % Определяем синал и шаблон
 clc; clear all; clf;
 t = 0 : 0.1 : 25;
 x = sin(t/2) + sin(3*t);
+x = x + rand(1,length(x));
 t_template = 7 : 0.1 : 9;
 x_template = sin(t_template/2 ) + sin(3 * t_template);
 figure;
@@ -21,4 +22,3 @@ end
 [a,b] = max(dot_results);%максимум соответсвует концу шаблона
 start_point = (b - length(t_template)) * 0.1;%начало шаблона в сигнале
 xline(start_point);
-end
