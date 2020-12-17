@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("myModel", model);
     engine.rootContext()->setContextProperty("database", &database);
 
-    engine.load(QUrl(QStringLiteral("../QML/main.qml")));
+    engine.load(QUrl(QStringLiteral("../QmlDataBase/main.qml")));
 
     return app.exec();
 }
