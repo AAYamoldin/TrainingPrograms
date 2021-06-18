@@ -1,0 +1,168 @@
+body {
+    background-color: #0e0e0e;
+    opacity: 0.5;
+}
+
+.text {
+    font-family: Helvetica, serif;
+    font-size: 30px;
+    color: seashell;
+    text-align: center;
+    font-weight: bold;
+}
+
+.header {
+    border-bottom: 1px solid seashell;
+    display: inline-flex;
+    width: 100%;
+    justify-content: space-between;
+    height: 69px;
+    align-items: center;
+    position: fixed;
+    top: 0px;
+    background-color: #0e0e0e;
+    z-index: 1;
+}
+
+.logo img {
+    height: 50px;
+    opacity: 0.9;
+    padding-left: 10px;
+}
+
+.header-links {
+    display: inline-flex;
+    justify-content: space-around;
+    max-width: 30%;
+    min-width: 300px;
+    flex-grow: 1;
+}
+
+.header-links a {
+    font-size: 22px;
+}
+
+.main-content {
+    display: flex;
+    width: 100%;
+    position: relative;
+    margin-top: 70px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.first-section {
+    display: flex;
+    width: 80%;
+    min-height: 1000px;
+    background-image: url(img-mission-background.jpg);
+    background-size: cover;
+    background-position: center;
+    flex-grow: 1;
+    align-items: center;
+}
+
+.our-mission {
+    display: inline-block;
+    flex-grow: 1;
+    background-color: #0e0e0e;
+}
+
+.second-section {
+    width: 60%;
+    display: flex;
+    margin-top: 69px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.Tea-of-the-month {
+    display: inline;
+    width: 100%;
+}
+
+.image {
+    display: inline-flex;
+    width: 100%;
+    justify-content: center;
+    flex-shrink: 1;
+    flex-wrap: wrap;
+}
+
+.image img {
+    width: 300px;
+    height: 200px;
+    margin: 20px;
+}
+
+.third-section{
+    display: flex;
+    width: 80%;
+    min-height: 700px;
+    background-image: url(img-locations-background.jpg);
+    background-size: cover;
+    background-position: center;
+    flex-grow: 1;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.text-on-locations{
+    display: flex;
+    position: relative;
+    width: 100%;
+    flex-shrink: 1;
+}
+
+.locations {
+    display: flex;
+    margin-top: 35px;
+    flex-shrink: 1;
+    flex-grow: 1;
+    width: 100%;
+    justify-content: space-around;
+}
+
+.location {
+    background-color: #0e0e0e;
+    opacity: 1;
+    width: 300px;
+}
+
+.location h3 {
+    margin-top: 90px;
+    font-weight: normal;
+    font-size: 1.8vw;
+}
+
+.location h2 {
+    font-size: 1.9vw;
+}
+
+.fourth-section {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.fourth-section p {
+    font-size: 2vw;
+}
+
+footer {
+    width: 100%;
+}
+
+.footer {
+    display: flex;
+    flex-grow: 1;
+    width: 100%;
+    margin-left: 30px;
+}
+
+.footer p {
+    font-size: 1.9vw;
+}
