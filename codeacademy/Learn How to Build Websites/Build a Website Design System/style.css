@@ -1,0 +1,25 @@
+.header {
+    background-image: url(images/bootstrap4-new-1024x538.png);
+    background-repeat: repeat-x;
+    background-position: 50% 10%;
+}
+
+@media only screen and (min-width : 1200px) {
+
+    .container { max-width: 2000px; }
+
+}
+@media only screen and (min-width: 2000px){
+    .carousel-inner img {
+        height: auto;
+        width: 100%;
+        padding-left: 500px;
+    }
+}
+
+@media only screen and (max-width: 800px){
+    .carousel-inner img {
+        height: 100%;
+        width: 120%;
+    }
+}
