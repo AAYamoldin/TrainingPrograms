@@ -1,22 +1,13 @@
----
-title: "R Notebook"
-output: html_notebook
----
+# Analysis and Development of Algorithms
 
-The [R plugin](https://www.jetbrains.com/help/pycharm/r-plugin-support.html) for IntelliJ-based IDEs provides
-handy capabilities to work with the [R Markdown](https://www.jetbrains.com/help/pycharm/r-markdown.html) files.
-To [add](https://www.jetbrains.com/help/pycharm/r-markdown.html#add-code-chunk) a new R chunk,
-position the caret at any line or the code chunk, then click "+".
+## ITMO University, Saint-Petersburg, 2021
++ Task 1. Experimental time complexity analysis
++ Task 2. Algorithms for unconstrained nonlinear optimization. Direct methods
++ Task 3. Algorithms for unconstrained nonlinear optimization. First- and secondorder methods
++ Task 4. Algorithms for unconstrained nonlinear optimization. Stochastic and metaheuristic algorithms
++ Task 5. Algorithms on graphs. Introduction to graphs and basic algorithms on graphs
++ Task 6. Algorithms on graphs. Path search algorithms on weighted graphs
++ Task 7. Algorithms on graphs. Tools for network analysis
++ Task 8 (Extended). Practical analysis of advanced algorithms. Were chosen Strassen’s algorithm for matrix multiplication and modified Vinograd-Strassen Algorithm. Results of both algorithms were compared.
 
-The code chunk appears:
-```{r}
-```
 
-Type any R code in the chunk, for example:
-```{r}
-mycars <- within(mtcars, { cyl <- ordered(cyl) })
-mycars
-```
-
-Now, click the **Run** button on the chunk toolbar to [execute](https://www.jetbrains.com/help/pycharm/r-markdown.html#run-r-code) the chunk code. The result should be placed under the chunk.
-Click the **Knit and Open Document** to build and preview an output.
