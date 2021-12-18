@@ -35,19 +35,6 @@ void zero_init_matrix(double** matrix, int n)
 			matrix[i][j] = 0.0;
 }
 
-bool is_arrays_equal(double** first, double** second, int n)
-{
-    for(int i = 0; i < n; i++)
-        for(int j = 0; j < n; j++)
-        {
-            if(first[i][j] != second[i][j])
-                return false;
-
-        }
-
-    return true;
-}
-
 void print_matrix(double** matrix, int n)
 {
     for(int i = 0; i < n; i++)
@@ -72,18 +59,12 @@ int main(int argc, char** argv)
 	rand_init_matrix(A, N);
 	rand_init_matrix(B, N);
 	zero_init_matrix(C, N);
-	zero_init_matrix(C_test, N);
 	double t;
 
     // Перемножаем матрицы в разном порядке
     cout << "ijk multiplication" << endl;
 
-	t = omp_get_wtime();//для подсчета эффективности перемножаем однопотоково
-	for (int i = 0; i < N; i++)
-		for (int j = 0; j < N; j++)
-			for (int k = 0; k < N; k++)
-				C_test[i][j] += A[i][k] * B[k][j];
-	double t_ijk = omp_get_wtime() - t;
+    double t_ijk = 0;
 
     for(int n_threads = 1; n_threads <= 12; n_threads++)
     {
@@ -98,21 +79,17 @@ int main(int argc, char** argv)
                         C[i][j] += A[i][k] * B[k][j];
         double t_ijk_parallel = omp_get_wtime() - t;
 
-        if(!is_arrays_equal(C, C_test, N))
-            cout << "not equal, ";
-        cout << "Threads" << n_threads << " Time " << t_ijk_parallel << " seconds, efficiency: " << t_ijk / t_ijk_parallel << endl;
+        if (1 == n_threads)
+        {
+            t_ijk = t_ijk_parallel;
+        }
+
+        cout << "Threads " << n_threads << " Time " << t_ijk_parallel << " seconds, efficiency: " << t_ijk / t_ijk_parallel << endl;
     }
 
     cout << "jki multiplication" << endl;
 
-	zero_init_matrix(C, N);
-	t = omp_get_wtime();
-	for (int j = 0; j < N; j++)
-		for (int k = 0; k < N; k++)
-			for (int i = 0; i < N; i++)
-				C[i][j] += A[i][k] * B[k][j];
-	double t_jki = omp_get_wtime() - t;//для подсчета эффективности перемножаем однопотоково
-
+    double t_jki = 0;
     for(int n_threads = 1; n_threads <= 12; n_threads++)
     {
         int i, j, k;
@@ -125,21 +102,18 @@ int main(int argc, char** argv)
                         C[i][j] += A[i][k] * B[k][j];
         double t_jki_parallel = omp_get_wtime() - t;
 
-        if(!is_arrays_equal(C, C_test, N))
-            cout << "not equal, ";
-        cout << "Threads " << n_threads << "Time " << t_jki_parallel << " seconds, efficiency: " << t_jki / t_jki_parallel << endl;
+        if (1 == n_threads)
+        {
+            t_jki = t_jki_parallel;
+        }
+
+        cout << "Threads " << n_threads << " Time " << t_jki_parallel << " seconds, efficiency: " << t_jki / t_jki_parallel << endl;
     }
 
     cout << "ikj multiplication" << endl;
 
-	zero_init_matrix(C, N);
-	t = omp_get_wtime();
-	for (int i = 0; i < N; i++)
-		for (int k = 0; k < N; k++)
-			for (int j = 0; j < N; j++)
-				C[i][j] += A[i][k] * B[k][j];
-	double t_ikj = omp_get_wtime() - t;//для подсчета эффективности перемножаем однопотоково
 
+    double t_ikj = 0;
     for(int n_threads = 1; n_threads <= 12; n_threads++)
     {
         int i, j, k;
@@ -152,8 +126,11 @@ int main(int argc, char** argv)
                         C[i][j] += A[i][k] * B[k][j];
         double t_ikj_parallel = omp_get_wtime() - t;
 
-        if(!is_arrays_equal(C, C_test, N))
-            cout << "not equal, ";
+        if (n_threads == 1)
+        {
+            t_ikj = t_ikj_parallel;
+        }
+
         cout << "Threads " << n_threads << " Time " << t_ikj_parallel << " seconds, efficiency: " << t_ikj / t_ikj_parallel << endl;
     }
 // освобождение памяти
