@@ -16,7 +16,7 @@ int main(int argc, char* argv[]) {
 
     int maxVal = arr[size-1];
 
-    for (int thread = 1; thread <= 16; thread++)
+    for (int thread = 1; thread <= 12; thread++)
     {
         double time = omp_get_wtime();
         #pragma omp parallel num_threads(thread) //задаем параллельную область
@@ -29,11 +29,14 @@ int main(int argc, char* argv[]) {
                     maxVal = arr[i];
                 }
             }
+            //printf("Num threads: %d\n", omp_get_num_threads());
         }
-        printf("Num thread(s): %d\n", omp_get_num_threads());//Печать результатов
+        //Печать результатов
+        printf("Num threads: %d\n", thread);
         printf("Max value: %d\n", maxVal);
-        printf("Time execution: %f\n", (omp_get_wtime() - time) / 100);
+        printf("Time execution: %f\n", (omp_get_wtime() - time));
     }
+    delete arr;
     return 0;
 
 }
