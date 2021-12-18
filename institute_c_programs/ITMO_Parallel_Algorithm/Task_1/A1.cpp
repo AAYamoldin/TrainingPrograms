@@ -30,7 +30,7 @@ int main(int argc, char* argv[]) {
                 }
             }
         }
-        printf("Num thread(s): %d\n", omp_get_num_threads());
+        printf("Num thread(s): %d\n", omp_get_num_threads());//Печать результатов
         printf("Max value: %d\n", maxVal);
         printf("Time execution: %f\n", (omp_get_wtime() - time) / 100);
     }
