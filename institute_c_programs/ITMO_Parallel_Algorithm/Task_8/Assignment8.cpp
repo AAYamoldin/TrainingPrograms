@@ -74,12 +74,12 @@ int main(int argc, char *argv[])
 		stop_time = MPI_Wtime();
 		elapsed_time = stop_time - start_time;
 
-		long int num_B = 8*N;
-		long int B_in_MB = 1 << 20;
+		double num_B = 8*N;
+		double B_in_MB = 1 << 20;
 		double num_MB = (double)num_B / (double)B_in_MB;
 		double avg_time_per_transfer = elapsed_time / (2.0*(double)loop_count);
 
-		if(rank == 0) printf("Transfer size (MB): %4ld, Transfer Time (s): %15.9f, Bandwidth (MB/s): %15.9f\n", num_B/B_in_MB, avg_time_per_transfer, num_MB/avg_time_per_transfer );
+		if(rank == 0) printf("Transfer size (MB): %15f,  Bandwidth (MB/s): %15.9f\n", num_B/B_in_MB, num_MB/avg_time_per_transfer );
 
 		free(A);
 	}

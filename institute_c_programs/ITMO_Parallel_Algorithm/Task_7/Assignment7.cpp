@@ -41,12 +41,11 @@ int main(int argc, char **argv) {
 
   n = atoi(argv[1]);
   if (n > NELMS) { printf("n=%d > N=%d\n",n,NELMS); exit(1); }
-  int portion = n / nprocs;//деление с округлением в меньшую сторону
   MPI_Init(&argc, &argv);
   world = MPI_COMM_WORLD;
   MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
   MPI_Comm_rank(MPI_COMM_WORLD, &pid);
-
+  int portion = n / nprocs;//деление с округлением в меньшую сторону
   sidx = pid * portion;//с какого элемента обрабатывает каждый поток
   eidx = sidx + portion;//до какого элемента обрабатывает каждый поток
   init_lst(vector_x, n);
@@ -77,7 +76,9 @@ int main(int argc, char **argv) {
 
   if (pid == MASTER) {
     printf("The result of dot multiplication =%d\n",prod);
-    printf(" elapsed=%f\n",etime-stime);
+    printf("Elapsed=%f\n",etime-stime);
   }
   MPI_Finalize();
+  return 0;
+
 }
