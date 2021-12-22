@@ -50,25 +50,25 @@ int main(int argc,char *argv[]){
    
     int sum = 0;
         //для каскада закоммитить 
-    MPI_Reduce(&sub_sum, &sum, 1, MPI_INT, MPI_SUM,0,MPI_COMM_WORLD);
+    // MPI_Reduce(&sub_sum, &sum, 1, MPI_INT, MPI_SUM,0,MPI_COMM_WORLD);
         
-    if(world_rank == 0)
-    {
-        printf("The sum of array is: %d\n",sum);
-        printf("Execution time %f s.\n", MPI_Wtime() - start_time);
-    }
+    // if(world_rank == 0)
+    // {
+    //     printf("The sum of array is: %d\n",sum);
+    //     printf("Execution time %f s.\n", MPI_Wtime() - start_time);
+    //}
 
-    // MPI_Gather(&sub_sum, 1, MPI_INT, &gath_sum, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    // if (world_rank == 0)
-    // {  
-    //     for (int i = 0; i < world_size; i++)
-    //     { 
-    //         sum += gath_sum[i];
-    //     } 
-    //     printf("The sum of array is: %d\n", sum); 
-    //     double execution_time = MPI_Wtime() - start_time; 
-    //     printf("Execution time for cascade is: %f\n", execution_time);
-    // } 
+    MPI_Gather(&sub_sum, 1, MPI_INT, &gath_sum, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    if (world_rank == 0)
+    {  
+        for (int i = 0; i < world_size; i++)
+        { 
+            sum += gath_sum[i];
+        } 
+        printf("The sum of array is: %d\n", sum); 
+        double execution_time = MPI_Wtime() - start_time; 
+        printf("Execution time for cascade is: %f\n", execution_time);
+    } 
  
 
     MPI_Finalize();
