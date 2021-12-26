@@ -47,18 +47,22 @@ int main(int argc,char *argv[]){
     }
     // printf(" My subsum is %d\n", sub_sum);
     //printf("\n");    
-   
+    
+    std::cout << "REDUCE ALGORITHM" << std::endl;
     int sum = 0;
-        //для каскада закоммитить 
-    // MPI_Reduce(&sub_sum, &sum, 1, MPI_INT, MPI_SUM,0,MPI_COMM_WORLD);
+    MPI_Reduce(&sub_sum, &sum, 1, MPI_INT, MPI_SUM,0,MPI_COMM_WORLD);
         
-    // if(world_rank == 0)
-    // {
-    //     printf("The sum of array is: %d\n",sum);
-    //     printf("Execution time %f s.\n", MPI_Wtime() - start_time);
-    //}
+    if(world_rank == 0)
+    {
+        printf("The sum of array is: %d\n",sum);
+        printf("Execution time %f s.\n", MPI_Wtime() - start_time);
+    }
 
+    std::cout << "CASCADE" << std::endl;
+    start_time = MPI_Wtime();
+    sum = 0;
     MPI_Gather(&sub_sum, 1, MPI_INT, &gath_sum, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    
     if (world_rank == 0)
     {  
         for (int i = 0; i < world_size; i++)
