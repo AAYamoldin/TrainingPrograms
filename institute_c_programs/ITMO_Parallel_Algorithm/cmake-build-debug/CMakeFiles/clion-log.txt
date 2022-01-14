@@ -1,0 +1,1 @@
+CMakeLists.txt not found in C:\Users\gto_n\PycharmProjects\TrainingPrograms\institute_c_programs\ITMO_Parallel_Algorithm Select CMakeLists.txt
