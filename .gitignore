@@ -6,3 +6,10 @@ RubyTraining/Rubyrush/.idea/modules.xml
 RubyTraining/Rubyrush/.idea/Rubyrush.iml
 *.idea
 *.ipynb_checkpoints
+/Python/ITMO_Advanced_Natural_Language_Processing/Homework_1/web_sites_data.csv
+/Python/ITMO_Advanced_Natural_Language_Processing/Homework_1/clear_dataframe.csv
+/Python/ITMO_Advanced_Natural_Language_Processing/Homework_1/clear_text.txt
+/Python/ITMO_Advanced_Natural_Language_Processing/Homework_1/raw_data.txt
+/Python/ITMO_Advanced_Natural_Language_Processing/Homework_1/raw_dataframe.csv
+/Python/ITMO_Advanced_Natural_Language_Processing/Homework_1/remove_tags.txt
+/Python/ITMO_Advanced_Natural_Language_Processing/Homework_2/train.csv
