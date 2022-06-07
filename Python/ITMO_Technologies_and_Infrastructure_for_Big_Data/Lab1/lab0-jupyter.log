@@ -1,0 +1,24 @@
+2022-05-15T17:59:32.051789502Z WARN: Jupyter Notebook deprecation notice https://github.com/jupyter/docker-stacks#jupyter-notebook-deprecation-notice.
+2022-05-15T17:59:32.062049446Z /usr/local/bin/start-notebook.sh: running hooks in /usr/local/bin/before-notebook.d
+2022-05-15T17:59:32.062126729Z /usr/local/bin/start-notebook.sh: running /usr/local/bin/before-notebook.d/spark-config.sh
+2022-05-15T17:59:32.062442831Z /usr/local/bin/start-notebook.sh: done running hooks in /usr/local/bin/before-notebook.d
+2022-05-15T17:59:32.062451297Z Executing the command: jupyter notebook --NotebookApp.token='P7YJ5PqhpR' --NotebookApp.port=8282
+2022-05-15T17:59:32.431245308Z /opt/conda/lib/python3.8/site-packages/traitlets/traitlets.py:2196: FutureWarning: Supporting extra quotes around Unicode is deprecated in traitlets 5.0. Use 'P7YJ5PqhpR' instead of "'P7YJ5PqhpR'" – or use CUnicode.
+2022-05-15T17:59:32.431277709Z   warn(
+2022-05-15T17:59:32.431281198Z [I 17:59:32.430 NotebookApp] Writing notebook server cookie secret to /home/jovyan/.local/share/jupyter/runtime/notebook_cookie_secret
+2022-05-15T17:59:33.207389697Z /opt/conda/lib/python3.8/site-packages/jupyter_server/transutils.py:13: FutureWarning: The alias `_()` will be deprecated. Use `_i18n()` instead.
+2022-05-15T17:59:33.207416703Z   warnings.warn(warn_msg, FutureWarning)
+2022-05-15T17:59:33.207420482Z [W 2022-05-15 17:59:33.206 LabApp] 'token' has moved from NotebookApp to ServerApp. This config will be passed to ServerApp. Be sure to update your config before our next release.
+2022-05-15T17:59:33.207423962Z [W 2022-05-15 17:59:33.207 LabApp] 'port' has moved from NotebookApp to ServerApp. This config will be passed to ServerApp. Be sure to update your config before our next release.
+2022-05-15T17:59:33.207427258Z [W 2022-05-15 17:59:33.207 LabApp] 'ip' has moved from NotebookApp to ServerApp. This config will be passed to ServerApp. Be sure to update your config before our next release.
+2022-05-15T17:59:33.207430375Z [W 2022-05-15 17:59:33.207 LabApp] 'ip' has moved from NotebookApp to ServerApp. This config will be passed to ServerApp. Be sure to update your config before our next release.
+2022-05-15T17:59:33.207433626Z [W 2022-05-15 17:59:33.207 LabApp] 'trust_xheaders' has moved from NotebookApp to ServerApp. This config will be passed to ServerApp. Be sure to update your config before our next release.
+2022-05-15T17:59:33.207440487Z [W 2022-05-15 17:59:33.207 LabApp] 'quit_button' was found in both NotebookApp and ServerApp. This is likely a recent change. This config will only be set in NotebookApp. Please check if you should also config these traits in ServerApp for your purpose.
+2022-05-15T17:59:33.207459508Z [W 2022-05-15 17:59:33.207 LabApp] 'quit_button' was found in both NotebookApp and ServerApp. This is likely a recent change. This config will only be set in NotebookApp. Please check if you should also config these traits in ServerApp for your purpose.
+2022-05-15T17:59:33.215219571Z [I 2022-05-15 17:59:33.214 LabApp] JupyterLab extension loaded from /opt/conda/lib/python3.8/site-packages/jupyterlab
+2022-05-15T17:59:33.215233588Z [I 2022-05-15 17:59:33.215 LabApp] JupyterLab application directory is /opt/conda/share/jupyter/lab
+2022-05-15T17:59:33.219196350Z [I 17:59:33.218 NotebookApp] Serving notebooks from local directory: /home/jovyan
+2022-05-15T17:59:33.219234715Z [I 17:59:33.219 NotebookApp] Jupyter Notebook 6.2.0 is running at:
+2022-05-15T17:59:33.219238773Z [I 17:59:33.219 NotebookApp] http://lab0-jupyter-6cd977cf9b-k2sr4:8282/?token=...
+2022-05-15T17:59:33.219320081Z [I 17:59:33.219 NotebookApp]  or http://127.0.0.1:8282/?token=...
+2022-05-15T17:59:33.219343930Z [I 17:59:33.219 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).

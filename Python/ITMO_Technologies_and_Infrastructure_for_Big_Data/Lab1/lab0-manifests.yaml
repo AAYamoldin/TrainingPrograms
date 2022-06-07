@@ -1,0 +1,85 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: lab0-jupyter-cm
+data:
+  # file-like keys  
+  jupyter_notebook_config.py: |
+   c.NotebookApp.trust_xheaders = True
+   c.NotebookApp.quit_button = False
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lab0-jupyter
+  labels:
+    app: lab0
+    jupyter: lab0
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lab0-jupyter
+      jupyter: lab0
+  template:
+      metadata:
+        labels:
+          jupyter: lab0
+          app: lab0-jupyter
+          env: dpo
+      spec:
+        volumes:
+          - name: jupyter-notebook-config
+            configMap: 
+              name: lab0-jupyter-cm
+              items: 
+                - key: 'jupyter_notebook_config.py'
+                  path: 'jupyter_notebook_config.py'
+          #   persistentVolumeClaim:
+          #     claimName: pvc-shared-ajamoldin-338693
+          #     readOnly: true
+          # - name: nfs-home-storage
+          #   persistentVolumeClaim:
+          #     claimName: pvc-ajamoldin-338693
+          #     readOnly: false
+        # serviceAccountName: spark
+        containers:
+          - name: jupyter
+            image: node03.st:5000/pyspark-hdfs-jupyter:ajamoldin-338693
+            imagePullPolicy: Always
+            resources:
+              requests:
+                memory: "2Gi"
+                cpu: "1"
+              limits:
+                memory: "2Gi"
+                cpu: "1"
+            ports:
+              - containerPort: 8282
+            command: [ "start-notebook.sh" ]
+            args: [ "--NotebookApp.token='P7YJ5PqhpR'", "--NotebookApp.port=8282" ]
+            volumeMounts:
+              - mountPath: "/home/jovyan/.jupyter/jupyter_notebook_config.py"
+                subPath: "jupyter_notebook_config.py"
+                name: jupyter-notebook-config
+                readOnly: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lab0-jupyter-service
+  labels:
+    filter: jupyter
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 8282
+      # protocol: TCP
+      name: jupyter
+    # - port: 4040
+    #   protocol: TCP
+    #   name: spark
+  selector:
+    jupyter: lab0

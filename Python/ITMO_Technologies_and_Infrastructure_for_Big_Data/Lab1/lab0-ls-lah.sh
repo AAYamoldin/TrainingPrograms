@@ -1,0 +1,1 @@
+kubectl exec lab0-jupyter-6cd977cf9b-k2sr4  -- ls -lah /home/jovyan/.jupyter

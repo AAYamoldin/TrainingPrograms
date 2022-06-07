@@ -1,0 +1,52 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lab-2-yamoldin
+  namespace: ajamoldin-338693
+  labels:
+    app: lab-2-yamoldin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lab-2-yamoldin
+  template:
+    metadata:
+      labels:
+        app: lab-2-yamoldin
+    spec:
+      volumes:
+        - name: lab-2-yamoldin-volume
+          hostPath:
+            path: /nfs/shared
+      containers:
+      - name: lab-2-yamoldin-container
+        image: node03.st:5000/pyspark-jupyter:1.0
+        imagePullPolicy: IfNotPresent
+        command: [ "start-notebook.sh" ]
+        args: [ "--NotebookApp.token=''" ]
+        ports:
+        - containerPort: 8888
+          name: jupyter
+        - containerPort: 4040
+          name: spark
+        volumeMounts:
+          - mountPath: "/home/jovyan/datasets"
+            name: lab-2-yamoldin-volume
+            readOnly: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lab-2-yamoldin-service
+  namespace: ajamoldin-338693
+spec:
+  type: NodePort
+  ports:
+  - port: 8888
+    name: jupyter
+  - port: 4040
+    name: spark-ui
+  selector:
+    app: lab-2-yamoldin
