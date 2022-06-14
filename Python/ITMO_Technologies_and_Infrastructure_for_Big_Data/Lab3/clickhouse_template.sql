@@ -1,5 +1,9 @@
+clickhouse-client --host=clickhouse-8.clickhouse.clickhouse --user=ajamoldin_338693 --password=P7YJ5PqhpR
+
+
 #создаём таблицу транзакций
-CREATE TABLE ajamoldin_338693.transactions ON CLUSTER kube_clickhouse_cluster
+CREATE TABLE 
+.transactions ON CLUSTER kube_clickhouse_cluster
 (
     user_id_out Int64,
     user_id_in Int64,
@@ -13,12 +17,20 @@ ORDER BY (user_id_out, user_id_in, amount)
 
 #Создаём распределённую таблицу транзакций 
 
-CREATE TABLE ajamoldin_338693.distributed_transactions ON CLUSTER kube_clickhouse_cluster AS ajamoldin_338693.transactions
+CREATE TABLE ajamoldin_338693.distributed_transactions_in ON CLUSTER kube_clickhouse_cluster AS ajamoldin_338693.transactions
 ENGINE = Distributed(
 	kube_clickhouse_cluster,
 	ajamoldin_338693,
 	transactions,
-	xxHash64(datetime)
+	xxHash64(user_id_in)
+)
+
+CREATE TABLE ajamoldin_338693.distributed_transactions_out ON CLUSTER kube_clickhouse_cluster AS ajamoldin_338693.transactions
+ENGINE = Distributed(
+	kube_clickhouse_cluster,
+	ajamoldin_338693,
+	transactions,
+	xxHash64(user_id_out)
 )
 
 
@@ -53,9 +65,9 @@ ORDER BY (user_id_out, date)
 POPULATE
 AS SELECT
     user_id_out,
-    avg(amount) AS avg_amount_out,
+    avgState(amount) AS avg_amount_out,
     formatDateTime(datetime, '%d-%m-%G') AS date
-FROM ajamoldin_338693.transactions
+FROM ajamoldin_338693.distributed_transactions_out
 GROUP BY
     user_id_out,
     date
@@ -98,60 +110,12 @@ GROUP BY user_id_in, date LIMIT 5
 CREATE TABLE ajamoldin_338693.distr_in_avg_amount_m ON CLUSTER kube_clickhouse_cluster AS ajamoldin_338693.in_avg_amount_m
 ENGINE = Distributed(kube_clickhouse_cluster, ajamoldin_338693, in_avg_amount_m)
 
--------------------------------------------------------------------------------------
-
-##
-CREATE MATERIALIZED VIEW ajamoldin_338693.out_avg_amount_m ON CLUSTER kube_clickhouse_cluster
-ENGINE = AggregatingMergeTree()
-ORDER BY (user_id_out, date)
-POPULATE
-AS SELECT
-    user_id_out,
-    avg(amount) AS avg_amount,
-    formatDateTime(datetime, '%m') AS date
-FROM ajamoldin_338693.transactions
-GROUP BY user_id_out, date
-
-CREATE TABLE ajamoldin_338693.distr_out_avg_amount_m ON CLUSTER kube_clickhouse_cluster AS ajamoldin_338693.out_avg_amount_m
-ENGINE = Distributed(kube_clickhouse_cluster, ajamoldin_338693, out_avg_amount_m)
-
-------------------------------------------------------------
-#sums for incoming and outcoming transactions by months for each user
-CREATE MATERIALIZED VIEW ajamoldin_338693.in_sum_amount_m ON CLUSTER kube_clickhouse_cluster
-ENGINE = AggregatingMergeTree()
-ORDER BY (user_id_in, date)
-POPULATE
-AS SELECT
-    user_id_in,
-    sum(amount) AS sum_amount,
-    formatDateTime(datetime, '%m') AS date
-FROM ajamoldin_338693.transactions
-GROUP BY user_id_in, date
-
-CREATE TABLE ajamoldin_338693.distr_in_sum_amount_m ON CLUSTER kube_clickhouse_cluster AS ajamoldin_338693.in_sum_amount_m
-ENGINE = Distributed(kube_clickhouse_cluster, ajamoldin_338693, in_sum_amount_m)
-
-##
-CREATE MATERIALIZED VIEW ajamoldin_338693.out_sum_amount_m ON CLUSTER kube_clickhouse_cluster
-ENGINE = AggregatingMergeTree()
-ORDER BY (user_id_out, date)
-POPULATE
-AS SELECT
-    user_id_out,
-    sum(amount) AS sum_amount,
-    formatDateTime(datetime, '%m') AS date
-FROM ajamoldin_338693.transactions
-GROUP BY user_id_out, date
-
-CREATE TABLE ajamoldin_338693.distr_out_sum_amount_m ON CLUSTER kube_clickhouse_cluster AS ajamoldin_338693.out_sum_amount_m
-ENGINE = Distributed(kube_clickhouse_cluster, ajamoldin_338693, out_sum_amount_m)
-
 ------------------------------------------------------------------------------------------------------------
 NEW!NEW!NEW!
 
 //Block by day
 --------------
-CREATE MATERIALIZED VIEW ajamoldin_338693.avg_day ON CLUSTER kube_clickhouse_cluster
+CREATE MATERIALIZED VIEW ajamoldin_338693.avg_day_debug ON CLUSTER kube_clickhouse_cluster
 ENGINE = AggregatingMergeTree()
 ORDER BY (user_id, date)
 POPULATE
@@ -262,3 +226,78 @@ GROUP BY date, user_id
 
 CREATE TABLE ajamoldin_338693.distr_sum_month ON CLUSTER kube_clickhouse_cluster AS ajamoldin_338693.sum_month
 ENGINE = Distributed(kube_clickhouse_cluster, ajamoldin_338693, sum_month, xxHash64(user_id))
+
+
+
+
+
+DROP TABLE ajamoldin_338693.avg_day_debug ON CLUSTER kube_clickhouse_cluster
+------------------------------------------------------------------------------------------------------------
+/*создаём таблицу транзакций*/
+CREATE TABLE ajamoldin_338693.transactions ON CLUSTER kube_clickhouse_cluster
+(
+    user_id_out Int64,
+    user_id_in Int64,
+    important Int64,
+    amount Float64,
+    datetime DateTime
+)
+ENGINE = MergeTree()
+PARTITION BY toYYYYMM(datetime)
+ORDER BY (user_id_out, user_id_in, amount)
+
+/*Шардим отдельно по In и Out транзакциям*/
+
+CREATE TABLE ajamoldin_338693.distributed_transactions_in ON CLUSTER kube_clickhouse_cluster AS ajamoldin_338693.transactions
+ENGINE = Distributed(
+	kube_clickhouse_cluster,
+	ajamoldin_338693,
+	transactions,
+	xxHash64(user_id_in)
+)
+
+CREATE TABLE ajamoldin_338693.distributed_transactions_out ON CLUSTER kube_clickhouse_cluster AS ajamoldin_338693.transactions
+ENGINE = Distributed(
+	kube_clickhouse_cluster,
+	ajamoldin_338693,
+	transactions,
+	xxHash64(user_id_out)
+)
+
+/*Создаём материализованное представление */
+
+CREATE MATERIALIZED VIEW ajamoldin_338693.avg_day_debug ON CLUSTER kube_clickhouse_cluster
+ENGINE = AggregatingMergeTree()
+ORDER BY (user_id, date_in, date_out)
+POPULATE
+AS SELECT
+    user_id_in AS user_id,
+    avg_amount_in,
+    avg_amount_out,
+    date_in,
+    date_out
+FROM
+(
+    SELECT
+        user_id_in,
+        avgState(amount) AS avg_amount_in,
+        formatDateTime(datetime, '%d-%m-%G') AS date_in
+    FROM ajamoldin_338693.distributed_transactions_in
+    GROUP BY
+        user_id_in,
+        date_in
+) AS t1
+INNER JOIN
+(
+    SELECT
+        user_id_out,
+        avgState(amount) AS avg_amount_out,
+        formatDateTime(datetime, '%d-%m-%G') AS date_out
+    FROM ajamoldin_338693.distributed_transactions_out
+    GROUP BY
+        user_id_out,
+        date_out
+) AS t2 ON t1.user_id_in = t2.user_id_out
+
+CREATE TABLE ajamoldin_338693.distr_avg_day_debug ON CLUSTER kube_clickhouse_cluster AS ajamoldin_338693.avg_day_debug
+ENGINE = Distributed(kube_clickhouse_cluster, ajamoldin_338693, avg_day_debug)
