@@ -1,0 +1,544 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "outputs": [],
+   "source": [
+    "#https://www.unaids.org/sites/default/files/country/documents/KAZ_2020_countryreport.pdf\n",
+    "#https://ru.wikipedia.org/wiki/Население_Казахстана\n",
+    "#fertility and death in https://ru.wikipedia.org/wiki/Население_Казахстана\n",
+    "#transition https://www.who.int/news-room/fact-sheets/detail/hiv-aids\n",
+    "#model https://cyberleninka.ru/article/n/hiv-incidence-in-russia-sir-epidemic-model-based-analysis"
+   ],
+   "metadata": {
+    "collapsed": false,
+    "pycharm": {
+     "name": "#%%\n",
+     "is_executing": true
+    }
+   }
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "outputs": [],
+   "source": [
+    "import pandas as pd\n",
+    "import numpy as np\n",
+    "from scipy.integrate import odeint\n",
+    "from scipy.optimize import minimize\n",
+    "from sklearn.metrics import mean_squared_error\n",
+    "from matplotlib import pyplot as plt"
+   ],
+   "metadata": {
+    "collapsed": false,
+    "pycharm": {
+     "name": "#%%\n"
+    }
+   }
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "outputs": [
+    {
+     "data": {
+      "text/plain": "   year           S      I      R  Iisol  total_population per 1000  \\\n0  2010  16142972.0  11500  51045    900                  16204.617   \n1  2011  16376801.0  12100  54258   1200                  16441.959   \n2  2012  16609663.0  12500  55029   1800                  16675.392   \n3  2013  16847238.0  14200  53273   2800                  16911.911   \n4  2014  17100085.0  15900  52354   3100                  17165.239   \n5  2015  17352725.0  16500  52252   4000                  17417.477   \n6  2016  17604544.0  18500  53013   5100                  17670.957   \n7  2017  17858626.0  20800  54674   8100                  17926.000   \n8  2018  18086834.0  22600  58103  10200                  18157.337   \n9  2019  18349635.0  26000  34032  14100                  18395.567   \n\n        total  \n0  16204617.0  \n1  16441959.0  \n2  16675392.0  \n3  16911911.0  \n4  17165239.0  \n5  17417477.0  \n6  17670957.0  \n7  17926000.0  \n8  18157337.0  \n9  18395567.0  ",
+      "text/html": "<div>\n<style scoped>\n    .dataframe tbody tr th:only-of-type {\n        vertical-align: middle;\n    }\n\n    .dataframe tbody tr th {\n        vertical-align: top;\n    }\n\n    .dataframe thead th {\n        text-align: right;\n    }\n</style>\n<table border=\"1\" class=\"dataframe\">\n  <thead>\n    <tr style=\"text-align: right;\">\n      <th></th>\n      <th>year</th>\n      <th>S</th>\n      <th>I</th>\n      <th>R</th>\n      <th>Iisol</th>\n      <th>total_population per 1000</th>\n      <th>total</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th>0</th>\n      <td>2010</td>\n      <td>16142972.0</td>\n      <td>11500</td>\n      <td>51045</td>\n      <td>900</td>\n      <td>16204.617</td>\n      <td>16204617.0</td>\n    </tr>\n    <tr>\n      <th>1</th>\n      <td>2011</td>\n      <td>16376801.0</td>\n      <td>12100</td>\n      <td>54258</td>\n      <td>1200</td>\n      <td>16441.959</td>\n      <td>16441959.0</td>\n    </tr>\n    <tr>\n      <th>2</th>\n      <td>2012</td>\n      <td>16609663.0</td>\n      <td>12500</td>\n      <td>55029</td>\n      <td>1800</td>\n      <td>16675.392</td>\n      <td>16675392.0</td>\n    </tr>\n    <tr>\n      <th>3</th>\n      <td>2013</td>\n      <td>16847238.0</td>\n      <td>14200</td>\n      <td>53273</td>\n      <td>2800</td>\n      <td>16911.911</td>\n      <td>16911911.0</td>\n    </tr>\n    <tr>\n      <th>4</th>\n      <td>2014</td>\n      <td>17100085.0</td>\n      <td>15900</td>\n      <td>52354</td>\n      <td>3100</td>\n      <td>17165.239</td>\n      <td>17165239.0</td>\n    </tr>\n    <tr>\n      <th>5</th>\n      <td>2015</td>\n      <td>17352725.0</td>\n      <td>16500</td>\n      <td>52252</td>\n      <td>4000</td>\n      <td>17417.477</td>\n      <td>17417477.0</td>\n    </tr>\n    <tr>\n      <th>6</th>\n      <td>2016</td>\n      <td>17604544.0</td>\n      <td>18500</td>\n      <td>53013</td>\n      <td>5100</td>\n      <td>17670.957</td>\n      <td>17670957.0</td>\n    </tr>\n    <tr>\n      <th>7</th>\n      <td>2017</td>\n      <td>17858626.0</td>\n      <td>20800</td>\n      <td>54674</td>\n      <td>8100</td>\n      <td>17926.000</td>\n      <td>17926000.0</td>\n    </tr>\n    <tr>\n      <th>8</th>\n      <td>2018</td>\n      <td>18086834.0</td>\n      <td>22600</td>\n      <td>58103</td>\n      <td>10200</td>\n      <td>18157.337</td>\n      <td>18157337.0</td>\n    </tr>\n    <tr>\n      <th>9</th>\n      <td>2019</td>\n      <td>18349635.0</td>\n      <td>26000</td>\n      <td>34032</td>\n      <td>14100</td>\n      <td>18395.567</td>\n      <td>18395567.0</td>\n    </tr>\n  </tbody>\n</table>\n</div>"
+     },
+     "execution_count": 13,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df = pd.read_excel('HIV_Kazakstan.xlsx')\n",
+    "df"
+   ],
+   "metadata": {
+    "collapsed": false,
+    "pycharm": {
+     "name": "#%%\n"
+    }
+   }
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "outputs": [
+    {
+     "data": {
+      "text/plain": "   year           S      I      R  Iisol  total_population per 1000  \\\n0  2010  16142972.0  11500  51045    900                  16204.617   \n1  2011  16376801.0  12100  54258   1200                  16441.959   \n2  2012  16609663.0  12500  55029   1800                  16675.392   \n3  2013  16847238.0  14200  53273   2800                  16911.911   \n4  2014  17100085.0  15900  52354   3100                  17165.239   \n5  2015  17352725.0  16500  52252   4000                  17417.477   \n\n        total  \n0  16204617.0  \n1  16441959.0  \n2  16675392.0  \n3  16911911.0  \n4  17165239.0  \n5  17417477.0  ",
+      "text/html": "<div>\n<style scoped>\n    .dataframe tbody tr th:only-of-type {\n        vertical-align: middle;\n    }\n\n    .dataframe tbody tr th {\n        vertical-align: top;\n    }\n\n    .dataframe thead th {\n        text-align: right;\n    }\n</style>\n<table border=\"1\" class=\"dataframe\">\n  <thead>\n    <tr style=\"text-align: right;\">\n      <th></th>\n      <th>year</th>\n      <th>S</th>\n      <th>I</th>\n      <th>R</th>\n      <th>Iisol</th>\n      <th>total_population per 1000</th>\n      <th>total</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th>0</th>\n      <td>2010</td>\n      <td>16142972.0</td>\n      <td>11500</td>\n      <td>51045</td>\n      <td>900</td>\n      <td>16204.617</td>\n      <td>16204617.0</td>\n    </tr>\n    <tr>\n      <th>1</th>\n      <td>2011</td>\n      <td>16376801.0</td>\n      <td>12100</td>\n      <td>54258</td>\n      <td>1200</td>\n      <td>16441.959</td>\n      <td>16441959.0</td>\n    </tr>\n    <tr>\n      <th>2</th>\n      <td>2012</td>\n      <td>16609663.0</td>\n      <td>12500</td>\n      <td>55029</td>\n      <td>1800</td>\n      <td>16675.392</td>\n      <td>16675392.0</td>\n    </tr>\n    <tr>\n      <th>3</th>\n      <td>2013</td>\n      <td>16847238.0</td>\n      <td>14200</td>\n      <td>53273</td>\n      <td>2800</td>\n      <td>16911.911</td>\n      <td>16911911.0</td>\n    </tr>\n    <tr>\n      <th>4</th>\n      <td>2014</td>\n      <td>17100085.0</td>\n      <td>15900</td>\n      <td>52354</td>\n      <td>3100</td>\n      <td>17165.239</td>\n      <td>17165239.0</td>\n    </tr>\n    <tr>\n      <th>5</th>\n      <td>2015</td>\n      <td>17352725.0</td>\n      <td>16500</td>\n      <td>52252</td>\n      <td>4000</td>\n      <td>17417.477</td>\n      <td>17417477.0</td>\n    </tr>\n  </tbody>\n</table>\n</div>"
+     },
+     "execution_count": 14,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df[0:6]"
+   ],
+   "metadata": {
+    "collapsed": false,
+    "pycharm": {
+     "name": "#%%\n"
+    }
+   }
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "outputs": [
+    {
+     "data": {
+      "text/plain": "   year           S      I      R  Iisol  total_population per 1000  \\\n0  2010  16142972.0  11500  51045    900                  16204.617   \n1  2011  16376801.0  12100  54258   1200                  16441.959   \n2  2012  16609663.0  12500  55029   1800                  16675.392   \n3  2013  16847238.0  14200  53273   2800                  16911.911   \n4  2014  17100085.0  15900  52354   3100                  17165.239   \n5  2015  17352725.0  16500  52252   4000                  17417.477   \n\n        total  \n0  16204617.0  \n1  16441959.0  \n2  16675392.0  \n3  16911911.0  \n4  17165239.0  \n5  17417477.0  ",
+      "text/html": "<div>\n<style scoped>\n    .dataframe tbody tr th:only-of-type {\n        vertical-align: middle;\n    }\n\n    .dataframe tbody tr th {\n        vertical-align: top;\n    }\n\n    .dataframe thead th {\n        text-align: right;\n    }\n</style>\n<table border=\"1\" class=\"dataframe\">\n  <thead>\n    <tr style=\"text-align: right;\">\n      <th></th>\n      <th>year</th>\n      <th>S</th>\n      <th>I</th>\n      <th>R</th>\n      <th>Iisol</th>\n      <th>total_population per 1000</th>\n      <th>total</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th>0</th>\n      <td>2010</td>\n      <td>16142972.0</td>\n      <td>11500</td>\n      <td>51045</td>\n      <td>900</td>\n      <td>16204.617</td>\n      <td>16204617.0</td>\n    </tr>\n    <tr>\n      <th>1</th>\n      <td>2011</td>\n      <td>16376801.0</td>\n      <td>12100</td>\n      <td>54258</td>\n      <td>1200</td>\n      <td>16441.959</td>\n      <td>16441959.0</td>\n    </tr>\n    <tr>\n      <th>2</th>\n      <td>2012</td>\n      <td>16609663.0</td>\n      <td>12500</td>\n      <td>55029</td>\n      <td>1800</td>\n      <td>16675.392</td>\n      <td>16675392.0</td>\n    </tr>\n    <tr>\n      <th>3</th>\n      <td>2013</td>\n      <td>16847238.0</td>\n      <td>14200</td>\n      <td>53273</td>\n      <td>2800</td>\n      <td>16911.911</td>\n      <td>16911911.0</td>\n    </tr>\n    <tr>\n      <th>4</th>\n      <td>2014</td>\n      <td>17100085.0</td>\n      <td>15900</td>\n      <td>52354</td>\n      <td>3100</td>\n      <td>17165.239</td>\n      <td>17165239.0</td>\n    </tr>\n    <tr>\n      <th>5</th>\n      <td>2015</td>\n      <td>17352725.0</td>\n      <td>16500</td>\n      <td>52252</td>\n      <td>4000</td>\n      <td>17417.477</td>\n      <td>17417477.0</td>\n    </tr>\n  </tbody>\n</table>\n</div>"
+     },
+     "execution_count": 15,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df_train = df[0:6]\n",
+    "df_train"
+   ],
+   "metadata": {
+    "collapsed": false,
+    "pycharm": {
+     "name": "#%%\n"
+    }
+   }
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "outputs": [
+    {
+     "data": {
+      "text/plain": "   year           S      I      R  Iisol  total_population per 1000  \\\n6  2016  17604544.0  18500  53013   5100                  17670.957   \n7  2017  17858626.0  20800  54674   8100                  17926.000   \n8  2018  18086834.0  22600  58103  10200                  18157.337   \n9  2019  18349635.0  26000  34032  14100                  18395.567   \n\n        total  \n6  17670957.0  \n7  17926000.0  \n8  18157337.0  \n9  18395567.0  ",
+      "text/html": "<div>\n<style scoped>\n    .dataframe tbody tr th:only-of-type {\n        vertical-align: middle;\n    }\n\n    .dataframe tbody tr th {\n        vertical-align: top;\n    }\n\n    .dataframe thead th {\n        text-align: right;\n    }\n</style>\n<table border=\"1\" class=\"dataframe\">\n  <thead>\n    <tr style=\"text-align: right;\">\n      <th></th>\n      <th>year</th>\n      <th>S</th>\n      <th>I</th>\n      <th>R</th>\n      <th>Iisol</th>\n      <th>total_population per 1000</th>\n      <th>total</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th>6</th>\n      <td>2016</td>\n      <td>17604544.0</td>\n      <td>18500</td>\n      <td>53013</td>\n      <td>5100</td>\n      <td>17670.957</td>\n      <td>17670957.0</td>\n    </tr>\n    <tr>\n      <th>7</th>\n      <td>2017</td>\n      <td>17858626.0</td>\n      <td>20800</td>\n      <td>54674</td>\n      <td>8100</td>\n      <td>17926.000</td>\n      <td>17926000.0</td>\n    </tr>\n    <tr>\n      <th>8</th>\n      <td>2018</td>\n      <td>18086834.0</td>\n      <td>22600</td>\n      <td>58103</td>\n      <td>10200</td>\n      <td>18157.337</td>\n      <td>18157337.0</td>\n    </tr>\n    <tr>\n      <th>9</th>\n      <td>2019</td>\n      <td>18349635.0</td>\n      <td>26000</td>\n      <td>34032</td>\n      <td>14100</td>\n      <td>18395.567</td>\n      <td>18395567.0</td>\n    </tr>\n  </tbody>\n</table>\n</div>"
+     },
+     "execution_count": 16,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df_test = df[6:]\n",
+    "df_test"
+   ],
+   "metadata": {
+    "collapsed": false,
+    "pycharm": {
+     "name": "#%%\n"
+    }
+   }
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 244,
+   "outputs": [
+    {
+     "data": {
+      "text/plain": "array([0, 1, 2, 3])"
+     },
+     "execution_count": 244,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "time = np.arange(0, 4, 1)\n",
+    "time"
+   ],
+   "metadata": {
+    "collapsed": false,
+    "pycharm": {
+     "name": "#%%\n"
+    }
+   }
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 245,
+   "outputs": [],
+   "source": [
+    "# # initial guess of model's parameters\n",
+    "# alpha - fertility rate\n",
+    "alpha = 0.02035 #https://ru.wikipedia.org/wiki/Население_Казахстана\n",
+    "#mu - death rate\n",
+    "mu = 0.00709 #https://ru.wikipedia.org/wiki/Население_Казахстана\n",
+    "# fi1 — the probability to give birth a healthy child for an infected mother\n",
+    "fi1 = 0.7 #https://www.who.int/news-room/fact-sheets/detail/hiv-aids\n",
+    "#fi2 - the probability to give birth a healthy child for an infected mother with chemoprophylaxis\n",
+    "fi2 = 0.92 #https://www.who.int/news-room/fact-sheets/detail/hiv-aids\n",
+    "omega = 0.65 # the probability of transition from infected group to a group of isolated ones http://static.government.ru/media/files/cbS7AH8vWirXO6xv7C2mySn1JeqDIvKA.pdf\n",
+    "# beta - transmission rate\n",
+    "beta = 0.13\n",
+    "# gamma transmission rate for HIV\n",
+    "gamma = 0.5"
+   ],
+   "metadata": {
+    "collapsed": false,
+    "pycharm": {
+     "name": "#%%\n"
+    }
+   }
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 246,
+   "outputs": [],
+   "source": [
+    "#model\n",
+    "\n",
+    "def derivatives(y, t, beta, gamma, omega):\n",
+    "    S, I, Is, R = y\n",
+    "    dSdt = -beta*I*S + ((alpha*(S+fi2*Is+fi1*I) - mu*S) / (S+Is+I))\n",
+    "    dIdt = beta*I*S - gamma*I + ((alpha*(1-fi1)*I-mu*I) / (S+Is+I)) - omega*I\n",
+    "    dIsdt = omega*I - gamma*Is + ((alpha*(1-fi2)*Is - mu*Is) / (\n",
+    "        S+Is+I))\n",
+    "    dRdt = gamma*(I+Is)\n",
+    "    return dSdt, dIdt, dIsdt, dRdt\n",
+    "\n",
+    "def loss_function(params, S0, I0, Is0, R0):\n",
+    "    y = S0, I0, Is0, R0\n",
+    "    int = odeint(derivatives, y, time, args=tuple(params))\n",
+    "    y_pred = pd.DataFrame(int, columns=['S', 'I', 'Iisol', 'R'])\n",
+    "    return mean_squared_error(y_true=df_test[['S','I','Iisol','R']], y_pred=y_pred[['S','I', 'Iisol','R']])"
+   ],
+   "metadata": {
+    "collapsed": false,
+    "pycharm": {
+     "name": "#%%\n"
+    }
+   }
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 247,
+   "outputs": [],
+   "source": [
+    "# Total population in Kazakstan\n",
+    "S0 = df_train['total'][5]\n",
+    "I0 = df_train['I'][5]  # Total infected\n",
+    "R0 = df_train['R'][5]  # death\n",
+    "Is0 = df_train['Iisol'][5] # Isolated, know status\n",
+    "\n",
+    "params = np.array([beta, gamma, omega])\n",
+    "\n",
+    "bnds = ((0,0.3), (0,0.08), (0.9, 0.99))"
+   ],
+   "metadata": {
+    "collapsed": false,
+    "pycharm": {
+     "name": "#%%\n"
+    }
+   }
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 248,
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "C:\\Users\\gto_n\\AppData\\Local\\Temp\\ipykernel_22136\\614684842.py:1: OptimizeWarning: Initial guess is not within the specified bounds\n",
+      "  best_params = minimize(fun=loss_function, x0=params, bounds = bnds, method ='Nelder-Mead', tol=1e-10, args=tuple([S0, I0, Is0, R0]))\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[0.   0.08 0.9 ]\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": " final_simplex: (array([[0.00000000e+00, 8.00000000e-02, 9.00000000e-01],\n       [0.00000000e+00, 8.00000000e-02, 9.00000000e-01],\n       [0.00000000e+00, 8.00000000e-02, 9.00000000e-01],\n       [3.75856753e-21, 8.00000000e-02, 9.00000000e-01]]), array([9.67744863e+10, 9.67744863e+10, 9.67744863e+10, 9.67744863e+10]))\n           fun: 96774486252.25607\n       message: 'Optimization terminated successfully.'\n          nfev: 326\n           nit: 72\n        status: 0\n       success: True\n             x: array([0.  , 0.08, 0.9 ])"
+     },
+     "execution_count": 248,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "best_params = minimize(fun=loss_function, x0=params, bounds = bnds, method ='Nelder-Mead', tol=1e-10, args=tuple([S0, I0, Is0, R0]))\n",
+    "print(best_params.x)\n",
+    "best_params"
+   ],
+   "metadata": {
+    "collapsed": false,
+    "pycharm": {
+     "name": "#%%\n"
+    }
+   }
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 243,
+   "outputs": [
+    {
+     "ename": "ValueError",
+     "evalue": "Length mismatch: Expected axis has 14 elements, new values have 4 elements",
+     "output_type": "error",
+     "traceback": [
+      "\u001B[1;31m---------------------------------------------------------------------------\u001B[0m",
+      "\u001B[1;31mValueError\u001B[0m                                Traceback (most recent call last)",
+      "Input \u001B[1;32mIn [243]\u001B[0m, in \u001B[0;36m<cell line: 6>\u001B[1;34m()\u001B[0m\n\u001B[0;32m      4\u001B[0m ret \u001B[38;5;241m=\u001B[39m odeint(derivatives, y, time, args\u001B[38;5;241m=\u001B[39mparams)\n\u001B[0;32m      5\u001B[0m model_result \u001B[38;5;241m=\u001B[39m pd\u001B[38;5;241m.\u001B[39mDataFrame(ret, columns\u001B[38;5;241m=\u001B[39m[\u001B[38;5;124m'\u001B[39m\u001B[38;5;124mS\u001B[39m\u001B[38;5;124m'\u001B[39m, \u001B[38;5;124m'\u001B[39m\u001B[38;5;124mI\u001B[39m\u001B[38;5;124m'\u001B[39m,\u001B[38;5;124m'\u001B[39m\u001B[38;5;124mIisol\u001B[39m\u001B[38;5;124m'\u001B[39m, \u001B[38;5;124m'\u001B[39m\u001B[38;5;124mR\u001B[39m\u001B[38;5;124m'\u001B[39m])\n\u001B[1;32m----> 6\u001B[0m model_result\u001B[38;5;241m.\u001B[39mindex \u001B[38;5;241m=\u001B[39m df_test\u001B[38;5;241m.\u001B[39msort_index()\u001B[38;5;241m.\u001B[39mindex\n\u001B[0;32m      7\u001B[0m model_result\n",
+      "File \u001B[1;32m~\\anaconda3\\envs\\Python\\lib\\site-packages\\pandas\\core\\generic.py:5588\u001B[0m, in \u001B[0;36mNDFrame.__setattr__\u001B[1;34m(self, name, value)\u001B[0m\n\u001B[0;32m   5586\u001B[0m \u001B[38;5;28;01mtry\u001B[39;00m:\n\u001B[0;32m   5587\u001B[0m     \u001B[38;5;28mobject\u001B[39m\u001B[38;5;241m.\u001B[39m\u001B[38;5;21m__getattribute__\u001B[39m(\u001B[38;5;28mself\u001B[39m, name)\n\u001B[1;32m-> 5588\u001B[0m     \u001B[38;5;28;01mreturn\u001B[39;00m \u001B[38;5;28;43mobject\u001B[39;49m\u001B[38;5;241;43m.\u001B[39;49m\u001B[38;5;21;43m__setattr__\u001B[39;49m\u001B[43m(\u001B[49m\u001B[38;5;28;43mself\u001B[39;49m\u001B[43m,\u001B[49m\u001B[43m \u001B[49m\u001B[43mname\u001B[49m\u001B[43m,\u001B[49m\u001B[43m \u001B[49m\u001B[43mvalue\u001B[49m\u001B[43m)\u001B[49m\n\u001B[0;32m   5589\u001B[0m \u001B[38;5;28;01mexcept\u001B[39;00m \u001B[38;5;167;01mAttributeError\u001B[39;00m:\n\u001B[0;32m   5590\u001B[0m     \u001B[38;5;28;01mpass\u001B[39;00m\n",
+      "File \u001B[1;32m~\\anaconda3\\envs\\Python\\lib\\site-packages\\pandas\\_libs\\properties.pyx:70\u001B[0m, in \u001B[0;36mpandas._libs.properties.AxisProperty.__set__\u001B[1;34m()\u001B[0m\n",
+      "File \u001B[1;32m~\\anaconda3\\envs\\Python\\lib\\site-packages\\pandas\\core\\generic.py:769\u001B[0m, in \u001B[0;36mNDFrame._set_axis\u001B[1;34m(self, axis, labels)\u001B[0m\n\u001B[0;32m    767\u001B[0m \u001B[38;5;28;01mdef\u001B[39;00m \u001B[38;5;21m_set_axis\u001B[39m(\u001B[38;5;28mself\u001B[39m, axis: \u001B[38;5;28mint\u001B[39m, labels: Index) \u001B[38;5;241m-\u001B[39m\u001B[38;5;241m>\u001B[39m \u001B[38;5;28;01mNone\u001B[39;00m:\n\u001B[0;32m    768\u001B[0m     labels \u001B[38;5;241m=\u001B[39m ensure_index(labels)\n\u001B[1;32m--> 769\u001B[0m     \u001B[38;5;28;43mself\u001B[39;49m\u001B[38;5;241;43m.\u001B[39;49m\u001B[43m_mgr\u001B[49m\u001B[38;5;241;43m.\u001B[39;49m\u001B[43mset_axis\u001B[49m\u001B[43m(\u001B[49m\u001B[43maxis\u001B[49m\u001B[43m,\u001B[49m\u001B[43m \u001B[49m\u001B[43mlabels\u001B[49m\u001B[43m)\u001B[49m\n\u001B[0;32m    770\u001B[0m     \u001B[38;5;28mself\u001B[39m\u001B[38;5;241m.\u001B[39m_clear_item_cache()\n",
+      "File \u001B[1;32m~\\anaconda3\\envs\\Python\\lib\\site-packages\\pandas\\core\\internals\\managers.py:214\u001B[0m, in \u001B[0;36mBaseBlockManager.set_axis\u001B[1;34m(self, axis, new_labels)\u001B[0m\n\u001B[0;32m    212\u001B[0m \u001B[38;5;28;01mdef\u001B[39;00m \u001B[38;5;21mset_axis\u001B[39m(\u001B[38;5;28mself\u001B[39m, axis: \u001B[38;5;28mint\u001B[39m, new_labels: Index) \u001B[38;5;241m-\u001B[39m\u001B[38;5;241m>\u001B[39m \u001B[38;5;28;01mNone\u001B[39;00m:\n\u001B[0;32m    213\u001B[0m     \u001B[38;5;66;03m# Caller is responsible for ensuring we have an Index object.\u001B[39;00m\n\u001B[1;32m--> 214\u001B[0m     \u001B[38;5;28;43mself\u001B[39;49m\u001B[38;5;241;43m.\u001B[39;49m\u001B[43m_validate_set_axis\u001B[49m\u001B[43m(\u001B[49m\u001B[43maxis\u001B[49m\u001B[43m,\u001B[49m\u001B[43m \u001B[49m\u001B[43mnew_labels\u001B[49m\u001B[43m)\u001B[49m\n\u001B[0;32m    215\u001B[0m     \u001B[38;5;28mself\u001B[39m\u001B[38;5;241m.\u001B[39maxes[axis] \u001B[38;5;241m=\u001B[39m new_labels\n",
+      "File \u001B[1;32m~\\anaconda3\\envs\\Python\\lib\\site-packages\\pandas\\core\\internals\\base.py:69\u001B[0m, in \u001B[0;36mDataManager._validate_set_axis\u001B[1;34m(self, axis, new_labels)\u001B[0m\n\u001B[0;32m     66\u001B[0m     \u001B[38;5;28;01mpass\u001B[39;00m\n\u001B[0;32m     68\u001B[0m \u001B[38;5;28;01melif\u001B[39;00m new_len \u001B[38;5;241m!=\u001B[39m old_len:\n\u001B[1;32m---> 69\u001B[0m     \u001B[38;5;28;01mraise\u001B[39;00m \u001B[38;5;167;01mValueError\u001B[39;00m(\n\u001B[0;32m     70\u001B[0m         \u001B[38;5;124mf\u001B[39m\u001B[38;5;124m\"\u001B[39m\u001B[38;5;124mLength mismatch: Expected axis has \u001B[39m\u001B[38;5;132;01m{\u001B[39;00mold_len\u001B[38;5;132;01m}\u001B[39;00m\u001B[38;5;124m elements, new \u001B[39m\u001B[38;5;124m\"\u001B[39m\n\u001B[0;32m     71\u001B[0m         \u001B[38;5;124mf\u001B[39m\u001B[38;5;124m\"\u001B[39m\u001B[38;5;124mvalues have \u001B[39m\u001B[38;5;132;01m{\u001B[39;00mnew_len\u001B[38;5;132;01m}\u001B[39;00m\u001B[38;5;124m elements\u001B[39m\u001B[38;5;124m\"\u001B[39m\n\u001B[0;32m     72\u001B[0m     )\n",
+      "\u001B[1;31mValueError\u001B[0m: Length mismatch: Expected axis has 14 elements, new values have 4 elements"
+     ]
+    }
+   ],
+   "source": [
+    "y = S0, I0, Is0, R0\n",
+    "params = tuple(best_params.x)\n",
+    "ret = odeint(derivatives, y, time, args=params)\n",
+    "model_result = pd.DataFrame(ret, columns=['S', 'I','Iisol', 'R'])\n",
+    "model_result.index = df_test.sort_index().index\n",
+    "model_result"
+   ],
+   "metadata": {
+    "collapsed": false,
+    "pycharm": {
+     "name": "#%%\n"
+    }
+   }
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 217,
+   "outputs": [
+    {
+     "data": {
+      "text/plain": "<Figure size 1080x720 with 1 Axes>",
+      "image/png": "iVBORw0KGgoAAAANSUhEUgAAA34AAAJcCAYAAACmOnadAAAAOXRFWHRTb2Z0d2FyZQBNYXRwbG90bGliIHZlcnNpb24zLjUuMSwgaHR0cHM6Ly9tYXRwbG90bGliLm9yZy/YYfK9AAAACXBIWXMAAAsTAAALEwEAmpwYAAAynklEQVR4nO3de7hdVX0v/O+PXEDDTSF4IdDQ1lYRw8UNavUQKoWK1drW9hVeBS/ti621al/1Lcf2oKKtfTynPadWW8urVK2ItICXalW8FsFLSTAiMWIp4jEHegjholgQEsb5Y6/ExWbvZCfstffOyOfzPOvZa40x5pxjZTATvnvMOWa11gIAAEC/9pjrDgAAADBagh8AAEDnBD8AAIDOCX4AAACdE/wAAAA6J/gBAAB0TvADgDlUVYdW1Z1VtWDw+QtV9VtTtF1eVa2qFs5uLwHY1Ql+AHShqp5WVV+qqjuq6taquqKqjp3rfk1UVTdU1S9s+dxa+5+ttb1ba5vnsl8A9M1vDAHY5VXVvkk+luR3kvx9ksVJ/lOSH81lvwBgvjDjB0APfiZJWmsXtNY2t9buaq1d2lq7uqreUFXv39Jw4uWSVfWiqrq+qn5QVd+pqucPtf1/qmrdoO6bVXXMoPzRVXVxVW0YbPOKoW3eUFUXVdWFg+2uqqojB3V/l+TQJP84uLzz/5vi8s2fqqp/GcxefqSqHj7Zl66q/arq3VV1U1X9r6p685ZLRgFgmOAHQA++nWRzVb23qk6pqodNZ6OqWpLkbUlOaa3tk+TnkqwZ1P1GkjckOSPJvkl+OcnGqtojyT8m+XqSg5OcmORVVfWLQ7t+TpJ/SPLwJB9I8uGqWtRaOz3J/0zy7MHlnW+domtnJHlJkkcn2TTo42TeO6j/6SRHJzk5yaT3BwKwe+su+FXVeVV1c1VdM422/72q1gxe366q22ehiwDMsNba95M8LUlL8v8n2VBVH62qR0xj8/uSHFFVD2mt3dRaWzso/60kb22tXdnGXdda+26SY5Msba2d01q7p7V2/eCYpw7tc3Vr7aLW2r1J/jzJXkmevANf6e9aa9e01n6Y5L8k+b8mzuQNvtspSV7VWvtha+3mJP99Qj8AIEmHwS/Je5I8YzoNW2u/31o7qrV2VJK/THLJCPsFwAi11ta11l7UWluW5IiMz5b9j+1s88Mkz0vy20luqqqPV9VjB9WHJPm3STb7iSSPrqrbt7ySvC7JcMj83tAx7kuyftCf6fre0PvvJlmU5MBJ+rFo0O8t/fibJAftwHEA2E10F/xaa5cluXW4rKp+qqo+WVWrq+qLQ/+oDzstyQWz0kkARqq19q2M/yLwiCQ/TPLQoepHTmj7qdbaSUkeleRbGZ+9S8bD109NsvvvJflOa23/odc+rbVnDrU5ZMubwaWhy5LcuOWQ0/gKhwy9PzTJvUlumaQfP0py4FA/9m2tPX4a+wdgN9Nd8JvCuUl+r7X2xCSvSfJXw5VV9RNJDkvyuTnoGwAPUlU9tqpeXVXLBp8Pyfgv9L6S8Xv2jh88L2+/JP95aLtHVNUvD+71+1GSO5NseazCu5K8pqqeWON+evDvxb8k+X5V/UFVPaSqFlTVERMeHfHEqvq1wYItrxrs+yuDuv+d5Ce385VeUFWHV9VDk5yT5KKJj3tord2U5NIkf1ZV+1bVHoNfdK7cgT86AHYT3Qe/qto74zfr/0NVrcn4ZTCPmtDs1EzyjyoAu4wfJHlSkq9W1Q8zHrKuSfLq1tqnk1yY5OokqzP+2Ict9kjy6ozPxt2aZGWSlyVJa+0fkvxxxhdn+UGSDyd5+ODfimcnOSrJdzI+E/euJPsN7fcjGb+E9LYkpyf5tcH9fknyliR/NLg88zVTfJ+/y/iM5b9n/P7AV0zR7oyMP7rim4NjXZQH/hsHAKnWpnPFya6lqpYn+Vhr7YjBs52uba1N+Q9hVX0tye+21r40W30EoE9V9YYkP91ae8Fc9wUAtuh+xm+w0tt3BstyZ3C5zpFb6qvqZ5M8LMmX56iLAAAAIzWy4FdVew0ePvv1qlpbVW+cpE1V1duq6rqqunrLg3EHdc+oqmsHdWftwHEvyHiI+9mqWl9Vv5nk+Ul+s6q+nmRtxp+vtMVpST7Yepz6BAAAyAgv9ayqSrKktXZnVS1KcnmSV7bWvjLU5plJfi/JMzN+b8ZftNaeNHhW0beTnJTxJbCvTHJaa+2bI+ksAABAx0Y24zd42O2dg4+LBq+JKfM5Sd43aPuVJPtX1aOSHJfkutba9a21e5J8MPefpQMAAGCaFo5y54OZu9VJfjrJO1prX53Q5ODc/yG16wdlk5U/aYpjnJnkzCRZsmTJEx/72Mke0QcAANC/1atX39JaWzqxfKTBb7Dk9VFVtX+SD1XVEa21a4aa1GSbbaN8smOcm/Hn9GVsbKytWrXqwXUaAABgF1VV352sfFZW9Wyt3Z7kC0meMaFqfZJDhj4vy/izlKYqBwAAYAeNclXPpYOZvlTVQ5L8QpJvTWj20SRnDFb3fHKSO1prN2V8MZfHVNVhVbU44w9Y/+io+goAANCzUV7q+agk7x3c57dHkr9vrX2sqn47SVpr70zyTxlf0fO6JP+R5MWDuk1V9fIkn0qyIMl5rbW1I+wrAABAt0b2OIe54B4/AAD4sXvvvTfr16/P3XffPdddYYbttddeWbZsWRYtWnS/8qpa3Vobm9h+pIu7AAAAc2f9+vXZZ599snz58ow/ZpsetNaycePGrF+/Pocddti0tpmVxV0AAIDZd/fdd+eAAw4Q+jpTVTnggAN2aCZX8AMAgI4JfX3a0XEV/AAAADon+AEAACNTVTn99NO3ft60aVOWLl2aZz3rWTu0n+XLl+eWW2550G0erBtuuCFHHHFEkmTVqlV5xStesc32f/Inf3K/zz/3cz83sr5ti+AHAACMzJIlS3LNNdfkrrvuSpJ8+tOfzsEHHzzHvXqgTZs27fA2Y2Njedvb3rbNNhOD35e+9KUdPs5MEPwAAICROuWUU/Lxj388SXLBBRfktNNO21p366235ld+5VeyYsWKPPnJT87VV1+dJNm4cWNOPvnkHH300XnpS1+a4cfQvf/9789xxx2Xo446Ki996UuzefPmbR5/7733zqtf/eocc8wxOfHEE7Nhw4YkyQknnJDXve51WblyZf7iL/4iq1evzsqVK/PEJz4xv/iLv5ibbropSbJ69eoceeSRecpTnpJ3vOMdW/f7hS98YevM5Z133pkXv/jFecITnpAVK1bk4osvzllnnZW77rorRx11VJ7//Odv7UsyvjLna1/72hxxxBF5whOekAsvvHDrPk844YT8+q//eh772Mfm+c9/fmbiEXwe5wAAALuBN/7j2nzzxu/P6D4Pf/S+ef2zH7/ddqeeemrOOeecPOtZz8rVV1+dl7zkJfniF7+YJHn961+fo48+Oh/+8Ifzuc99LmeccUbWrFmTN77xjXna056Ws88+Ox//+Mdz7rnnJknWrVuXCy+8MFdccUUWLVqUl73sZTn//PNzxhlnTHn8H/7whznmmGPyZ3/2ZznnnHPyxje+MW9/+9uTJLfffnv++Z//Offee29WrlyZj3zkI1m6dGkuvPDC/OEf/mHOO++8vPjFL85f/uVfZuXKlXnta1876THe9KY3Zb/99ss3vvGNJMltt92W5z73uXn729+eNWvWPKD9JZdckjVr1uTrX/96brnllhx77LE5/vjjkyRf+9rXsnbt2jz60Y/OU5/61FxxxRV52tOett0/520R/AAAgJFasWJFbrjhhlxwwQV55jOfeb+6yy+/PBdffHGS5OlPf3o2btyYO+64I5dddlkuueSSJMkv/dIv5WEPe1iS5LOf/WxWr16dY489Nkly11135aCDDtrm8ffYY48873nPS5K84AUvyK/92q9trdtSfu211+aaa67JSSedlCTZvHlzHvWoR+WOO+7I7bffnpUrVyZJTj/99HziE594wDE+85nP5IMf/ODWz1v6O5XLL788p512WhYsWJBHPOIRWblyZa688srsu+++Oe6447Js2bIkyVFHHZUbbrhB8AMAALZvOjNzo/TLv/zLec1rXpMvfOEL2bhx49byyS5j3PKogskeWdBaywtf+MK85S1v2em+DO93yZIlW/f7+Mc/Pl/+8pfv1/b222+f1qMTWms79IiFbV2+ueeee259v2DBgp26/3Ai9/gBAAAj95KXvCRnn312nvCEJ9yv/Pjjj8/555+fZPz+tgMPPDD77rvv/co/8YlP5LbbbkuSnHjiibnoooty8803Jxm/R/C73/3uNo9933335aKLLkqSfOADH5h09uxnf/Zns2HDhq3B7957783atWuz//77Z7/99svll1+eJFv7NNHJJ5+89fLRJFv7u2jRotx7770PaH/88cfnwgsvzObNm7Nhw4ZcdtllOe6447b5PR4MwQ8AABi5ZcuW5ZWvfOUDyt/whjdk1apVWbFiRc4666y8973vTTJ+799ll12WY445JpdeemkOPfTQJMnhhx+eN7/5zTn55JOzYsWKnHTSSVsXYZnKkiVLsnbt2jzxiU/M5z73uZx99tkPaLN48eJcdNFF+YM/+IMceeSROeqoo7auwPm3f/u3+d3f/d085SlPyUMe8pBJj/FHf/RHue2223LEEUfkyCOPzOc///kkyZlnnpkVK1ZsXdxli1/91V/NihUrcuSRR+bpT3963vrWt+aRj3zkdv4Ud17NxAox88XY2FhbtWrVXHcDAADmhXXr1uVxj3vcXHdjzu2999658847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\n"
+     },
+     "metadata": {
+      "needs_background": "light"
+     },
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "fig = plt.figure(figsize=(15, 10))\n",
+    "plt.plot(df_test['year'], model_result['S'], label='Model prediction')\n",
+    "plt.plot(df_test['year'], df_test['S'], label='True')\n",
+    "plt.legend()\n",
+    "# plt.grid()\n",
+    "plt.xlabel(\"years\")\n",
+    "plt.ylabel('S')\n",
+    "plt.title('Susceptible')\n",
+    "plt.ylim(bottom=1e7)\n",
+    "plt.ylim(top=3e7)\n",
+    "plt.savefig('S.jpg', bbox_inches='tight')\n",
+    "plt.show()"
+   ],
+   "metadata": {
+    "collapsed": false,
+    "pycharm": {
+     "name": "#%%\n"
+    }
+   }
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 218,
+   "outputs": [],
+   "source": [
+    "from sklearn.metrics import mean_absolute_error"
+   ],
+   "metadata": {
+    "collapsed": false,
+    "pycharm": {
+     "name": "#%%\n"
+    }
+   }
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 219,
+   "outputs": [
+    {
+     "data": {
+      "text/plain": "557432.7301038317"
+     },
+     "execution_count": 219,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "mean_absolute_error(df_test['S'], model_result['S'])"
+   ],
+   "metadata": {
+    "collapsed": false,
+    "pycharm": {
+     "name": "#%%\n"
+    }
+   }
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 226,
+   "outputs": [
+    {
+     "data": {
+      "text/plain": "3.1011712317711733"
+     },
+     "execution_count": 226,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# % error for S\n",
+    "mean_absolute_error(df_test['S'], model_result['S'])/df_test['S'].mean()*100"
+   ],
+   "metadata": {
+    "collapsed": false,
+    "pycharm": {
+     "name": "#%%\n"
+    }
+   }
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 227,
+   "outputs": [
+    {
+     "data": {
+      "text/plain": "15502.729641741375"
+     },
+     "execution_count": 227,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "mean_absolute_error(df_test['I'], model_result['I'])"
+   ],
+   "metadata": {
+    "collapsed": false,
+    "pycharm": {
+     "name": "#%%\n"
+    }
+   }
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 229,
+   "outputs": [
+    {
+     "data": {
+      "text/plain": "70.54712009893686"
+     },
+     "execution_count": 229,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# % error for I\n",
+    "mean_absolute_error(df_test['I'], model_result['I'])/df_test['I'].mean()*100"
+   ],
+   "metadata": {
+    "collapsed": false,
+    "pycharm": {
+     "name": "#%%\n"
+    }
+   }
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 230,
+   "outputs": [
+    {
+     "data": {
+      "text/plain": "13.522515850262906"
+     },
+     "execution_count": 230,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# % error for R\n",
+    "mean_absolute_error(df_test['R'], model_result['R'])/df_test['R'].mean()*100"
+   ],
+   "metadata": {
+    "collapsed": false,
+    "pycharm": {
+     "name": "#%%\n"
+    }
+   }
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 231,
+   "outputs": [
+    {
+     "data": {
+      "text/plain": "31.54565992310763"
+     },
+     "execution_count": 231,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# % error for isolated\n",
+    "mean_absolute_error(df_test['Iisol'], model_result['Iisol'])/df_test['Iisol'].mean()*100"
+   ],
+   "metadata": {
+    "collapsed": false,
+    "pycharm": {
+     "name": "#%%\n"
+    }
+   }
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "outputs": [],
+   "source": [],
+   "metadata": {
+    "collapsed": false,
+    "pycharm": {
+     "name": "#%%\n"
+    }
+   }
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 2
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython2",
+   "version": "2.7.6"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 0
+}
